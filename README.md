@@ -13,16 +13,16 @@
 
 كل قالب مجلد مستقل في `themes/<id>/` يضم شعاره في `assets/logo.svg` وأربع صفحات: `login.html` و`status.html` و`alogin.html` و`logout.html`. الصفحات مكتفية ذاتياً (CSS وJS مضمّنان، بلا خطوط أو مكتبات خارجية)، فتعمل قبل أن يملك المستخدم إنترنت.
 
-| الشعار | القالب | المعرّف | الطابع |
-| :---: | :--- | :--- | :--- |
-| <img src="themes/oled-matrix/assets/logo.svg" width="160" alt="شعار oled-matrix"> | **OLED Matrix** | `oled-matrix` | أسود مطلق، نافذة طرفية، مطر أرقام عربية خافت (المفعّل حالياً) |
-| <img src="themes/cyberpunk/assets/logo.svg" width="160" alt="شعار cyberpunk"> | **Cyberpunk Neon** | `cyberpunk` | أفق نيون بشمس مخططة وأرضية شبكية متحركة وزوايا مشطوفة |
-| <img src="themes/swiss-minimal/assets/logo.svg" width="160" alt="شعار swiss-minimal"> | **Swiss Minimal** | `swiss-minimal` | ورق فاتح وحبر أسود وشبكة صارمة واسم Zeidex بعرض الصفحة |
-| <img src="themes/aurora-glass/assets/logo.svg" width="160" alt="شعار aurora-glass"> | **Aurora Glass** | `aurora-glass` | شفق قطبي متحرك خلف لوحة زجاجية متجمدة |
-| <img src="themes/neo-brutalist/assets/logo.svg" width="160" alt="شعار neo-brutalist"> | **Neo-Brutalist** | `neo-brutalist` | أصفر وحدود سوداء عريضة وظلال صلبة وشريط أسعار متحرك |
-| <img src="themes/luxury-gold/assets/logo.svg" width="160" alt="شعار luxury-gold"> | **Luxury Champagne** | `luxury-gold` | عاجي وذهب مسطح بخط نسخ وقائمة أسعار فندقية |
-| <img src="themes/spatial-glass/assets/logo.svg" width="160" alt="شعار spatial-glass"> | **Spatial Glass** | `spatial-glass` | زجاج عميق، لوحة تميل مع المؤشر، شريط خدمات بأسلوب Dock |
-| <img src="themes/nordic-studio/assets/logo.svg" width="160" alt="شعار nordic-studio"> | **Nordic Studio** | `nordic-studio` | بازلت داكن ولمسة برتقالية واحدة وعنوان معماري كبير |
+| المعاينة | الشعار | القالب | المعرّف | الطابع |
+| :---: | :---: | :--- | :--- | :--- |
+| <img src="previews/oled-matrix.webp" width="180" alt="معاينة متحركة لقالب oled-matrix"> | <img src="themes/oled-matrix/assets/logo.svg" width="160" alt="شعار oled-matrix"> | **OLED Matrix** | `oled-matrix` | أسود مطلق، نافذة طرفية، مطر أرقام عربية خافت (المفعّل حالياً) |
+| <img src="previews/cyberpunk.webp" width="180" alt="معاينة متحركة لقالب cyberpunk"> | <img src="themes/cyberpunk/assets/logo.svg" width="160" alt="شعار cyberpunk"> | **Cyberpunk Neon** | `cyberpunk` | أفق نيون بشمس مخططة وأرضية شبكية متحركة وزوايا مشطوفة |
+| <img src="previews/swiss-minimal.webp" width="180" alt="معاينة متحركة لقالب swiss-minimal"> | <img src="themes/swiss-minimal/assets/logo.svg" width="160" alt="شعار swiss-minimal"> | **Swiss Minimal** | `swiss-minimal` | ورق فاتح وحبر أسود وشبكة صارمة واسم Zeidex بعرض الصفحة |
+| <img src="previews/aurora-glass.webp" width="180" alt="معاينة متحركة لقالب aurora-glass"> | <img src="themes/aurora-glass/assets/logo.svg" width="160" alt="شعار aurora-glass"> | **Aurora Glass** | `aurora-glass` | شفق قطبي متحرك خلف لوحة زجاجية متجمدة |
+| <img src="previews/neo-brutalist.webp" width="180" alt="معاينة متحركة لقالب neo-brutalist"> | <img src="themes/neo-brutalist/assets/logo.svg" width="160" alt="شعار neo-brutalist"> | **Neo-Brutalist** | `neo-brutalist` | أصفر وحدود سوداء عريضة وظلال صلبة وشريط أسعار متحرك |
+| <img src="previews/luxury-gold.webp" width="180" alt="معاينة متحركة لقالب luxury-gold"> | <img src="themes/luxury-gold/assets/logo.svg" width="160" alt="شعار luxury-gold"> | **Luxury Champagne** | `luxury-gold` | عاجي وذهب مسطح بخط نسخ وقائمة أسعار فندقية |
+| <img src="previews/spatial-glass.webp" width="180" alt="معاينة متحركة لقالب spatial-glass"> | <img src="themes/spatial-glass/assets/logo.svg" width="160" alt="شعار spatial-glass"> | **Spatial Glass** | `spatial-glass` | زجاج عميق، لوحة تميل مع المؤشر، شريط خدمات بأسلوب Dock |
+| <img src="previews/nordic-studio.webp" width="180" alt="معاينة متحركة لقالب nordic-studio"> | <img src="themes/nordic-studio/assets/logo.svg" width="160" alt="شعار nordic-studio"> | **Nordic Studio** | `nordic-studio` | بازلت داكن ولمسة برتقالية واحدة وعنوان معماري كبير |
 
 ما تشترك فيه كل القوالب:
 - تشفير CHAP MD5، مع رجوع إلى PAP إن لم يرسل الراوتر `chap-id`.
@@ -31,6 +31,7 @@
 - دعم لوحة المفاتيح وقارئات الشاشة، واحترام إعداد `prefers-reduced-motion`.
 - طلب قياس زمن استجابة واحد فقط عند الفتح، حتى لا يُحظر المستخدم بقاعدة Anti-Brute Force.
 
+- **المعاينات:** صور متحركة في `previews/<id>.webp` (خطأ الإدخال، تقسيم رقم الكرت، نافذة نقاط البيع) وصورة ثابتة في `previews/<id>.png`.
 - **معرض القوالب:** [`gallery.html`](gallery.html) يعرض كل قالب حياً داخل إطار هاتف (`http://localhost:3000/gallery.html`).
 
 ---
