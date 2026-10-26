@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قوالب Zeidex Hotspot</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#111112;--ink:#f1f0ec;--muted:#a3a19b;--surface:#1a1a1c;--accent:#f1f0ec;--font:system-ui,-apple-system,"Segoe UI","Noto Sans Arabic",Tahoma,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.55;padding:clamp(16px,4vw,40px)}
+.wrap{max-width:1280px;margin:0 auto}
+header{display:grid;gap:14px;margin-bottom:clamp(40px,7vw,96px);max-width:760px}
+h1{font-size:clamp(2.4rem,7vw,5rem);line-height:1;letter-spacing:-.035em;font-weight:800}
+.intro{font-size:1.1875rem;color:var(--ink);max-width:52ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:clamp(40px,6vw,88px) clamp(24px,4vw,56px)}
+.spec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;animation:rise .7s var(--ease) both;animation-delay:calc(var(--i) * 70ms)}
+.phone{width:234px;height:506px;border-radius:30px;overflow:hidden;background:#000;outline:6px solid #2a2a2d;transition:transform .35s var(--ease)}
+.spec:hover .phone{transform:translateY(-6px)}
+.phone iframe{width:390px;height:844px;border:0;transform:scale(.6);transform-origin:top right;display:block}
+h2{font-size:1.5rem;letter-spacing:-.02em;line-height:1.2}
+h2 span{display:block;font-size:1rem;font-weight:500;color:var(--muted);letter-spacing:0}
+.spec-text p{margin-top:10px;max-width:42ch}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px}
+.links a{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px;transition:color .15s}
+.links a:hover{color:var(--muted)}
+.cmd code{display:inline-block;font:600 .8125rem/1.4 ui-monospace,Menlo,Consolas,monospace;direction:ltr;background:var(--surface);padding:6px 10px;border-radius:6px;color:var(--muted)}
+footer{margin-top:clamp(56px,8vw,120px);color:var(--muted);font-size:.875rem}
+@media (max-width:560px){.spec{grid-template-columns:1fr;justify-items:center;text-align:center}.links{justify-content:center}.spec-text p{margin-inline:auto}}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>قوالب Zeidex Hotspot</h1>
+  <p class="intro">8 قوالب لصفحات هوتسبوت مايكروتك. كل قالب يضم صفحات الدخول والحالة وما بعد الاتصال والخروج، ويعمل بلا إنترنت وبلا مكتبات خارجية، مع تشفير CHAP MD5.</p>
+</header>
+<main class="grid">
+  <article class="spec" style="--i:0">
+    <div class="phone"><iframe src="themes/oled-matrix/login.html" title="معاينة قالب طرفية OLED" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>طرفية OLED <span lang="en">OLED Matrix</span></h2>
+      <p>أسود مطلق يوفّر بطارية شاشات OLED، بخط أحادي للأرقام ومطر أرقام عربية خافت خلف نافذة طرفية.</p>
+      <p class="links"><a href="themes/oled-matrix/login.html">الدخول</a><a href="themes/oled-matrix/status.html">الحالة</a><a href="themes/oled-matrix/alogin.html">بعد الاتصال</a><a href="themes/oled-matrix/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh oled-matrix</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:1">
+    <div class="phone"><iframe src="themes/cyberpunk/login.html" title="معاينة قالب نيون سيبراني" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>نيون سيبراني <span lang="en">Cyberpunk Neon</span></h2>
+      <p>أفق نيون بشمس مخططة وأرضية شبكية متحركة، ولوحة بزوايا مشطوفة وحدّ متدرج من السماوي إلى الوردي.</p>
+      <p class="links"><a href="themes/cyberpunk/login.html">الدخول</a><a href="themes/cyberpunk/status.html">الحالة</a><a href="themes/cyberpunk/alogin.html">بعد الاتصال</a><a href="themes/cyberpunk/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh cyberpunk</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:2">
+    <div class="phone"><iframe src="themes/swiss-minimal/login.html" title="معاينة قالب سويسري" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>سويسري <span lang="en">Swiss Minimal</span></h2>
+      <p>ورق فاتح وحبر أسود وشبكة صارمة: عنوان كبير، حقل رقم بخط سفلي عريض، واسم Zeidex بعرض الصفحة في الختام.</p>
+      <p class="links"><a href="themes/swiss-minimal/login.html">الدخول</a><a href="themes/swiss-minimal/status.html">الحالة</a><a href="themes/swiss-minimal/alogin.html">بعد الاتصال</a><a href="themes/swiss-minimal/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh swiss-minimal</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:3">
+    <div class="phone"><iframe src="themes/aurora-glass/login.html" title="معاينة قالب زجاج الشفق" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>زجاج الشفق <span lang="en">Aurora Glass</span></h2>
+      <p>شفق قطبي ينساب ببطء خلف لوحة زجاجية متجمدة، بزر أبيض كبسولي وتوهج وردي عند التفاعل.</p>
+      <p class="links"><a href="themes/aurora-glass/login.html">الدخول</a><a href="themes/aurora-glass/status.html">الحالة</a><a href="themes/aurora-glass/alogin.html">بعد الاتصال</a><a href="themes/aurora-glass/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh aurora-glass</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:4">
+    <div class="phone"><iframe src="themes/neo-brutalist/login.html" title="معاينة قالب نيو-بروتالي" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>نيو-بروتالي <span lang="en">Neo-Brutalist</span></h2>
+      <p>أصفر صارخ وحدود سوداء عريضة وظلال صلبة، مع شريط أسعار متحرك وأزرار تنضغط فعلاً عند اللمس.</p>
+      <p class="links"><a href="themes/neo-brutalist/login.html">الدخول</a><a href="themes/neo-brutalist/status.html">الحالة</a><a href="themes/neo-brutalist/alogin.html">بعد الاتصال</a><a href="themes/neo-brutalist/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh neo-brutalist</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:5">
+    <div class="phone"><iframe src="themes/luxury-gold/login.html" title="معاينة قالب شمبانيا فاخر" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>شمبانيا فاخر <span lang="en">Luxury Champagne</span></h2>
+      <p>عاجي وحبر داكن وذهب مسطح بخط نسخ، بإطار مزدوج وقائمة أسعار بنقاط إرشاد كقوائم الفنادق.</p>
+      <p class="links"><a href="themes/luxury-gold/login.html">الدخول</a><a href="themes/luxury-gold/status.html">الحالة</a><a href="themes/luxury-gold/alogin.html">بعد الاتصال</a><a href="themes/luxury-gold/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh luxury-gold</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:6">
+    <div class="phone"><iframe src="themes/spatial-glass/login.html" title="معاينة قالب زجاج مكاني" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>زجاج مكاني <span lang="en">Spatial Glass</span></h2>
+      <p>زجاج عميق بحواف مضيئة على ضوء غرفة دافئ، ولوحة تميل مع المؤشر وشريط خدمات بأسلوب Dock.</p>
+      <p class="links"><a href="themes/spatial-glass/login.html">الدخول</a><a href="themes/spatial-glass/status.html">الحالة</a><a href="themes/spatial-glass/alogin.html">بعد الاتصال</a><a href="themes/spatial-glass/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh spatial-glass</code></p>
+    </div>
+  </article>
+  <article class="spec" style="--i:7">
+    <div class="phone"><iframe src="themes/nordic-studio/login.html" title="معاينة قالب استوديو نورديك" loading="lazy" tabindex="-1"></iframe></div>
+    <div class="spec-text">
+      <h2>استوديو نورديك <span lang="en">Nordic Studio</span></h2>
+      <p>بازلت داكن ورمادي دافئ ولمسة برتقالية واحدة، بعنوان معماري كبير وجدول أسعار بأرقام جدولية.</p>
+      <p class="links"><a href="themes/nordic-studio/login.html">الدخول</a><a href="themes/nordic-studio/status.html">الحالة</a><a href="themes/nordic-studio/alogin.html">بعد الاتصال</a><a href="themes/nordic-studio/logout.html">الخروج</a></p>
+      <p class="cmd"><code>./scripts/switch-theme.sh nordic-studio</code></p>
+    </div>
+  </article>
+</main>
+<footer>القالب المفعّل الآن على الجذر: oled-matrix. المعاينات حيّة، ومتغيرات الراوتر مثل <span dir="ltr">$(error)</span> تظهر كما هي خارج الراوتر.</footer>
+</div>
+</body>
+</html>

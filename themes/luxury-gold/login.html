@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f3ede1">
+<meta name="color-scheme" content="light">
+<title>تسجيل الدخول | شبكة Zeidex</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+:root{--ease:cubic-bezier(.22,1,.36,1);--gap:24px;--pad:clamp(16px,4vw,32px);--h1:clamp(1.85rem,5vw,2.6rem);--h1-weight:800;--h1-track:-.015em;--field-h:62px;--field-bw:1.5px;--btn-h:58px}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;line-height:1.55;overflow-x:hidden;position:relative;text-rendering:optimizeLegibility}
+body.modal-open{overflow:hidden}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.page{position:relative;z-index:1;width:100%;max-width:var(--page-max,1120px);margin:0 auto;padding:var(--pad);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;gap:var(--gap)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px;flex-shrink:0;display:block}
+.brand-name{font-family:var(--font-display);font-weight:800;font-size:1.3rem;letter-spacing:-.01em;direction:ltr}
+.net{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0;animation:pulse 2.4s var(--ease) infinite}
+.net-ms{font-family:var(--font-num);font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.stage{flex:1;display:grid;gap:var(--gap);align-content:center;grid-template-columns:minmax(0,1fr)}
+.main-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (min-width:960px){.stage{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:clamp(32px,5vw,72px)}}
+.panel{position:relative;background:var(--surface);border:var(--panel-border,1px solid var(--line));border-radius:var(--radius);box-shadow:var(--panel-shadow,none)}
+.panel-in{padding:clamp(24px,5vw,40px);border-radius:inherit}
+h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-weight:var(--h1-weight);letter-spacing:var(--h1-track)}
+.lede{margin-top:10px;color:var(--muted);font-size:1.0625rem;max-width:40ch}
+.alert{display:flex;gap:10px;align-items:flex-start;margin-top:22px;padding:13px 15px;border-radius:var(--radius-sm);background:var(--danger-bg);color:var(--danger-ink);font-size:.9375rem;border:1px solid var(--danger-line);animation:rise .35s var(--ease) both}
+.alert svg{width:19px;height:19px;flex-shrink:0;margin-top:2px;color:var(--danger)}
+#loginForm{margin-top:28px;display:flex;flex-direction:column}
+.field-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:.9375rem;font-weight:700;margin-bottom:10px}
+.count{font-size:.8125rem;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.field{position:relative;display:flex;align-items:center}
+.field-input{width:100%;height:var(--field-h);background:var(--field-bg);color:var(--field-ink,var(--ink));border:var(--field-bw) solid var(--field-line);border-radius:var(--radius-sm);padding:0 18px;font-family:var(--font-num);font-size:1.55rem;font-weight:700;letter-spacing:.16em;direction:ltr;text-align:center;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none;transition:border-color .15s ease-out,box-shadow .25s var(--ease),background-color .25s,transform .25s var(--ease)}
+.field-input::placeholder{color:var(--muted);opacity:.55;letter-spacing:.32em;font-weight:500}
+.field-input:focus{outline:none;border-color:var(--accent-line,var(--accent));box-shadow:var(--focus-ring)}
+.field-input.is-error{border-color:var(--danger);transition:border-color .28s ease-out}
+.field-input.is-shaking{animation:shake .28s linear}
+.field.has-paste .field-input{padding:0 84px}
+.paste{position:absolute;left:9px;height:42px;padding:0 14px;border-radius:var(--radius-xs,var(--radius-sm));background:var(--chip-bg);color:var(--chip-ink);font-size:.8125rem;font-weight:700;transition:transform .15s var(--ease),background-color .15s}
+.paste:active{transform:scale(.95)}
+.hint{margin-top:10px;font-size:.875rem;color:var(--muted)}
+.submit{margin-top:24px;min-height:var(--btn-h);width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:1.0625rem;border-radius:var(--btn-radius,var(--radius-sm));text-decoration:none;transition:transform .2s var(--ease),background-color .2s,box-shadow .2s,color .2s}
+.submit svg{width:20px;height:20px;flex-shrink:0;transition:transform .3s var(--ease)}
+.submit:hover:not(:disabled) svg{transform:translateX(-5px)}
+.submit:active:not(:disabled){transform:scale(.98)}
+.submit:disabled{cursor:progress;background:var(--busy-bg);color:var(--busy-ink);box-shadow:none}
+.submit .spin{display:none;width:18px;height:18px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+.submit.is-busy .spin{display:block}
+.submit.is-busy svg{display:none}
+.swap{animation:swap .25s ease-in-out both}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 14px;border-radius:var(--radius-sm);background:var(--surface-2);font-weight:700;font-size:.9375rem;transition:transform .2s var(--ease),background-color .2s,box-shadow .2s}
+.action svg{width:18px;height:18px;color:var(--accent-2);flex-shrink:0}
+.action:hover{background:var(--surface-3)}
+.action:active{transform:scale(.97)}
+.plans h2{font-family:var(--font-display);font-size:1.25rem;font-weight:800;letter-spacing:-.01em}
+.plans-note{color:var(--muted);font-size:.9375rem;margin-top:4px}
+.plan-list{list-style:none;display:flex;flex-direction:column;gap:var(--plan-gap,8px);margin-top:16px}
+.plan{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;background:var(--surface-2);border-radius:var(--radius-sm);transition:transform .25s var(--ease),background-color .2s}
+.plan{width:100%;text-align:start;cursor:pointer}
+.plan:hover{background:var(--surface-3)}
+.plan:active{transform:scale(.985)}
+.plan-end{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.plan-rate{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.plan-name{display:block;font-weight:800;font-size:1rem}
+.plan-meta{display:block;font-size:.875rem;color:var(--muted)}
+.lead{display:none}
+.plan-price{font-family:var(--font-num);font-weight:800;font-size:1.25rem;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--price,var(--ink))}
+.plan-price small{font-family:var(--font);font-size:.8125rem;font-weight:600;color:var(--muted);margin-inline-start:4px}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;font-size:.8125rem;color:var(--muted)}
+.foot a{text-decoration:none;border-bottom:1px solid currentColor}
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+@media (min-width:600px){.modal{align-items:center;padding:24px}}
+.modal-backdrop{position:absolute;inset:0;background:var(--scrim,rgba(0,0,0,.6));opacity:0;transition:opacity .25s var(--ease)}
+.sheet{position:relative;width:100%;max-width:460px;max-height:86vh;overflow:auto;overscroll-behavior:contain;background:var(--surface-solid);color:var(--ink);border-radius:var(--radius);border:var(--sheet-border,0);box-shadow:var(--sheet-shadow,0 30px 80px rgba(0,0,0,.45));padding:22px;transform:scale(.96) translateY(12px);opacity:0;transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.modal.is-open .modal-backdrop{opacity:1}
+.modal.is-open .sheet{transform:none;opacity:1}
+.modal.is-closing .sheet,.modal.is-closing .modal-backdrop{transition-duration:.15s}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sheet-head h2{font-family:var(--font-display);font-size:1.25rem;font-weight:800}
+.close{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--surface-2);transition:background-color .15s,transform .15s var(--ease)}
+.close:hover{background:var(--surface-3)}
+.close:active{transform:scale(.94)}
+.close svg{width:18px;height:18px}
+.search{width:100%;height:48px;margin-bottom:12px;padding:0 16px;background:var(--field-bg);border:1.5px solid var(--field-line);border-radius:var(--radius-sm);color:var(--ink);font-size:1rem}
+.search:focus{outline:none;border-color:var(--accent-line,var(--accent));box-shadow:var(--focus-ring)}
+.pos-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pos{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;background:var(--surface-2);border-radius:var(--radius-sm)}
+.pos h3{font-size:1rem;font-weight:800}
+.pos p{font-size:.875rem;color:var(--muted)}
+.pos .hours{color:var(--ink);opacity:.8}
+.call{width:46px;height:46px;flex-shrink:0;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--accent);color:var(--accent-ink);transition:transform .15s var(--ease),filter .15s}
+.call:hover{filter:brightness(1.08)}
+.call:active{transform:scale(.94)}
+.call svg{width:19px;height:19px}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:.9375rem}
+.faq{margin-top:18px}
+.faq h3{font-size:1rem;font-weight:800;margin-bottom:8px}
+.faq ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.faq li{font-size:.9375rem;color:var(--muted);padding-inline-start:14px;position:relative}
+.faq li::before{content:"";position:absolute;inset-inline-start:0;top:.65em;width:5px;height:5px;border-radius:50%;background:var(--accent-2)}
+.faq b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.stat{padding:14px 16px;background:var(--surface-2);border-radius:var(--radius-sm);min-width:0}
+.stat dt{font-size:.8125rem;color:var(--muted)}
+.stat dd{font-family:var(--font-num);font-weight:800;font-size:1.0625rem;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;overflow-wrap:anywhere}
+.stat.wide{grid-column:1/-1}
+.stat.hero dd{font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.15;color:var(--price,var(--ink))}
+.who{direction:ltr;unicode-bidi:isolate;font-family:var(--font-num);font-weight:800;color:var(--ink)}
+.btn-ghost{margin-top:12px;min-height:52px;width:100%;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--btn-radius,var(--radius-sm));border:1.5px solid var(--danger-line);background:transparent;color:var(--danger-ink);font-weight:700;font-size:1rem;transition:background-color .2s,transform .2s var(--ease)}
+.btn-ghost:hover{background:var(--danger-bg)}
+.btn-ghost:active{transform:scale(.98)}
+.progress{height:4px;margin-top:22px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent-2);transform-origin:right;animation:fill 2s linear both}
+.done-mark{width:56px;height:56px;margin-bottom:18px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--accent);color:var(--accent-ink)}
+.done-mark svg{width:28px;height:28px}
+.check-path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .5s .2s var(--ease) forwards}
+.solo{max-width:560px;width:100%;margin-inline:auto}
+.is-solo .stage{grid-template-columns:minmax(0,1fr)}
+.rise{animation:rise .6s var(--ease) backwards;animation-delay:calc(var(--i,0) * 80ms)}
+.ticker{display:flex;align-items:stretch;min-height:48px;overflow:hidden;background:var(--tk-bg,var(--surface-2));color:var(--tk-ink,var(--ink));border:var(--tk-border,0);border-radius:var(--tk-radius,var(--radius-sm));box-shadow:var(--tk-shadow,none)}
+.ticker-track{flex:1;min-width:0;overflow:hidden;white-space:nowrap;display:flex;align-items:center;text-align:start;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+.ticker-run{display:inline-flex;align-items:center;animation:tick 32s linear infinite;font-weight:700;font-size:.9375rem}
+.ticker-run span{padding-inline:14px}
+.ticker-run b{font-family:var(--font-num);font-variant-numeric:tabular-nums;color:var(--tk-price,var(--price,var(--ink)));margin-inline-start:6px}
+.ticker-run i{width:5px;height:5px;flex-shrink:0;border-radius:50%;background:var(--tk-dot,var(--accent-2))}
+.ticker:hover .ticker-run,.ticker:focus-within .ticker-run,.ticker.is-paused .ticker-run{animation-play-state:paused}
+.ticker-cta{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:0 16px;background:var(--tk-cta-bg,var(--accent));color:var(--tk-cta-ink,var(--accent-ink));border-radius:var(--tk-cta-radius,0);font-weight:800;font-size:.875rem;transition:filter .15s,transform .15s var(--ease)}
+.ticker-cta:hover{filter:brightness(1.1)}
+.ticker-cta:active{transform:scale(.96)}
+.ticker-cta svg{width:16px;height:16px}
+@keyframes tick{to{transform:translateX(50%)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes swap{from{opacity:0;transform:translateY(4px);filter:blur(2px)}to{opacity:1;transform:none;filter:none}}
+@keyframes shake{0%{transform:translateX(0)}28.57%{transform:translateX(6px)}57.14%{transform:translateX(-6px)}78.57%{transform:translateX(4px)}100%{transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+
+/* ── Luxury Champagne ── */
+:root{--tk-bg:transparent;--tk-border:1px solid #d6c59f;--tk-price:#7c5d22;--tk-dot:#9a7633;--bg:#f3ede1;--ink:#1d1913;--muted:#665d4d;--surface:#fbf8f1;--surface-solid:#fbf8f1;--surface-2:#f2ebdc;--surface-3:#e9dec6;--line:#d6c59f;--accent:#1d1913;--accent-ink:#f6f0e4;--accent-2:#9a7633;--accent-line:#9a7633;--ok:#9a7633;--focus:#9a7633;--danger:#9b1c1c;--danger-bg:#f6e3dc;--danger-ink:#6b1313;--danger-line:#e2b8aa;--field-bg:#fffdf8;--field-line:#d9caa7;--focus-ring:0 0 0 4px rgba(154,118,51,.16);--chip-bg:#efe6d2;--chip-ink:#5e4720;--busy-bg:#d9cfba;--busy-ink:#4f4738;--radius:2px;--radius-sm:2px;--font:"Noto Naskh Arabic","Amiri","Traditional Arabic","Times New Roman",serif;--font-display:"Noto Naskh Arabic","Amiri","Traditional Arabic","Times New Roman",serif;--font-num:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--h1:clamp(2rem,5.5vw,2.9rem);--h1-weight:700;--h1-track:0;--price:#7c5d22;--panel-border:1px solid #d6c59f;--panel-shadow:0 40px 80px -40px rgba(70,50,15,.35);--scrim:rgba(29,25,19,.45);--sheet-shadow:0 30px 70px rgba(29,25,19,.25);--page-max:640px}
+.bg{background:radial-gradient(90% 60% at 50% 0%,#fbf7ee,transparent 70%)}
+.topbar{flex-direction:column;justify-content:center;gap:10px;text-align:center}
+.brand{flex-direction:column;gap:8px}
+.brand-mark{width:66px;height:66px}
+.brand-name{font-family:var(--font-num);font-weight:400;font-size:1.05rem;letter-spacing:.42em;text-transform:uppercase;margin-inline-end:-.42em}
+@media (min-width:960px){.stage{grid-template-columns:minmax(0,1fr)}}
+.panel{outline:1px solid #d6c59f;outline-offset:7px;margin:8px}
+.panel-in{text-align:center;padding:clamp(28px,6vw,52px)}
+.lede{margin-inline:auto}
+.field-label{justify-content:center;gap:10px}
+.field-input{font-weight:400;font-size:1.85rem;letter-spacing:.22em}
+.submit:hover:not(:disabled){background:#9a7633;color:#fff}
+.alert{text-align:start}
+.action{background:transparent;border:1px solid #d6c59f}
+.action:hover{background:#efe6d2}
+.action svg{color:#9a7633}
+.plans{text-align:center;padding-top:8px}
+.plans h2{font-size:1.6rem;font-weight:700}
+.plan-list{gap:0;text-align:start}
+.plan{background:none;border-radius:0;padding:14px 4px;align-items:baseline}
+.plan:hover{background:none}
+.lead{display:block;flex:1;min-width:24px;border-bottom:1.5px dotted #b9a473;transform:translateY(-6px)}
+.plan-price{font-weight:400;font-size:1.4rem}
+.foot{justify-content:center;text-align:center}
+.call{background:#1d1913;color:#f6f0e4}
+.stat{text-align:start}
+.done-mark{margin-inline:auto}
+</style>
+</head>
+<body class="theme-luxury-gold">
+<div class="bg" aria-hidden="true"></div>
+<div class="page">
+<header class="topbar rise" style="--i:0">
+  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30.5" fill="none" stroke="#9a7633" stroke-width="1.2"/><circle cx="32" cy="32" r="26.5" fill="none" stroke="#9a7633" stroke-width=".6"/><text x="32" y="43" text-anchor="middle" font-family="Didot,'Bodoni 72','Bodoni MT',Georgia,serif" font-size="31" fill="#1d1913">Z</text></svg><span class="brand-name">Zeidex</span></div>
+  <span class="net"><span class="dot" aria-hidden="true"></span><span>شبكة Zeidex</span><span class="net-ms" id="netMs" hidden></span></span>
+</header>
+<div class="ticker rise" style="--i:1">
+  <button type="button" class="ticker-track" id="tickerToggle" aria-pressed="false" aria-label="إيقاف حركة شريط الأسعار"><span class="ticker-run" aria-hidden="true"><span>ساعتان<b>100 ريال</b></span><i></i><span>يوم كامل<b>300 ريال</b></span><i></i><span>أسبوع<b>1,000 ريال</b></span><i></i><span>شهر<b>3,500 ريال</b></span><i></i><span>ساعتان<b>100 ريال</b></span><i></i><span>يوم كامل<b>300 ريال</b></span><i></i><span>أسبوع<b>1,000 ريال</b></span><i></i><span>شهر<b>3,500 ريال</b></span><i></i></span></button>
+  <button type="button" class="ticker-cta" data-open="posModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>اشترِ كرتاً</span></button>
+</div>
+<div class="stage">
+  <div class="main-col">
+  <main class="panel rise" style="--i:1"><div class="panel-in">
+    <h1>أهلاً بك في Zeidex</h1>
+    <p class="lede">أدخل رقم الكرت لتبدأ التصفح.</p>
+    <div class="alert" id="serverErrorBanner" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.01"/></svg><p id="errorMsgText">$(error)</p></div>
+    <div class="alert" id="clientErrorBanner" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.01"/></svg><p id="clientErrorMsg"></p></div>
+    <form id="loginForm" name="login" action="$(link-login-only)" method="post" novalidate>
+      <input type="hidden" name="dst" value="$(link-orig)">
+      <input type="hidden" name="popup" value="true">
+      <label class="field-label" for="voucherCode"><span>رقم الكرت</span><span class="count" id="charCount" aria-live="polite"></span></label>
+      <div class="field" id="fieldWrap">
+        <input type="text" id="voucherCode" name="username" class="field-input" placeholder="••••••••" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="numeric" enterkeyhint="go" aria-describedby="fieldHint">
+        <button type="button" class="paste" id="btnPaste" hidden>لصق</button>
+      </div>
+      <p class="hint" id="fieldHint">الرقم تحت الطبقة الفضية في ظهر الكرت.</p>
+      <button type="submit" class="submit" id="btnSubmit"><span id="btnSubmitText">الدخول إلى الشبكة</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="spin" aria-hidden="true"></span></button>
+    </form>
+  </div></main>
+  <nav class="actions rise" style="--i:2" aria-label="خدمات الشبكة">
+    <button type="button" class="action" data-open="posModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>نقاط البيع</span></button>
+    <button type="button" class="action" data-open="supportModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>الدعم الفني</span></button>
+  </nav>
+  </div>
+  <aside class="plans rise" style="--i:3" aria-labelledby="plansTitle">
+    <h2 id="plansTitle">قائمة الباقات</h2>
+    <p class="plans-note">اضغط على باقة لترى أقرب نقطة بيع. الكرت يعمل على جهاز واحد حتى تنتهي باقته.</p>
+    <ul class="plan-list">
+      <li><button type="button" class="plan" data-open="posModal" aria-label="باقة ساعتان بسعر 100 ريال، اعرض نقاط البيع"><span><span class="plan-name">ساعتان</span><span class="plan-meta">رصيد مفتوح بالسرعة الكاملة</span></span><span class="lead" aria-hidden="true"></span><span class="plan-end"><span class="plan-price">100<small>ريال</small></span></span></button></li>
+      <li><button type="button" class="plan" data-open="posModal" aria-label="باقة يوم كامل بسعر 300 ريال، اعرض نقاط البيع"><span><span class="plan-name">يوم كامل</span><span class="plan-meta">24 ساعة وتحميل غير محدود</span></span><span class="lead" aria-hidden="true"></span><span class="plan-end"><span class="plan-price">300<small>ريال</small></span></span></button></li>
+      <li><button type="button" class="plan" data-open="posModal" aria-label="باقة أسبوع بسعر 1,000 ريال، اعرض نقاط البيع"><span><span class="plan-name">أسبوع</span><span class="plan-meta">7 أيام باستقرار مناسب للألعاب</span></span><span class="lead" aria-hidden="true"></span><span class="plan-end"><span class="plan-price">1,000<small>ريال</small></span><span class="plan-rate">≈ 143 ريال لليوم</span></span></button></li>
+      <li><button type="button" class="plan" data-open="posModal" aria-label="باقة شهر بسعر 3,500 ريال، اعرض نقاط البيع"><span><span class="plan-name">شهر</span><span class="plan-meta">30 يوماً متواصلة</span></span><span class="lead" aria-hidden="true"></span><span class="plan-end"><span class="plan-price">3,500<small>ريال</small></span><span class="plan-rate">≈ 117 ريال لليوم</span></span></button></li>
+    </ul>
+  </aside>
+</div>
+<footer class="foot rise" style="--i:4"><span>Zeidex · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
+
+</div>
+
+<form name="sendin" action="$(link-login-only)" method="post" hidden>
+  <input type="hidden" name="username">
+  <input type="hidden" name="password">
+  <input type="hidden" name="dst" value="$(link-orig)">
+  <input type="hidden" name="popup" value="true">
+</form>
+<div class="modal" id="posModal" role="dialog" aria-modal="true" aria-labelledby="posTitle" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="posTitle">نقاط بيع الكروت</h2><button type="button" class="close" data-close aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <input type="search" class="search" id="posSearch" placeholder="ابحث باسم المحل أو الشارع" aria-label="ابحث عن نقطة بيع" autocomplete="off">
+    <ul class="pos-list" id="posList">
+      <li class="pos" data-q="مركز Zeidex الرئيسي الشارع العام، جوار بنك اليمن والكويت"><div><h3>مركز Zeidex الرئيسي</h3><p>الشارع العام، جوار بنك اليمن والكويت</p><p class="hours">الدوام: 24 ساعة</p></div><a class="call" href="tel:777000111" aria-label="اتصال بـ مركز Zeidex الرئيسي"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></li>
+      <li class="pos" data-q="سوبرماركت البركة جولة الصقر، مقابل الحديقة العامة"><div><h3>سوبرماركت البركة</h3><p>جولة الصقر، مقابل الحديقة العامة</p><p class="hours">الدوام: 7 ص – 12 م</p></div><a class="call" href="tel:777000222" aria-label="اتصال بـ سوبرماركت البركة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></li>
+      <li class="pos" data-q="كافيه الأندلس شارع الجامعة، عمارة التكنولوجيا"><div><h3>كافيه الأندلس</h3><p>شارع الجامعة، عمارة التكنولوجيا</p><p class="hours">الدوام: 8 ص – 2 ص</p></div><a class="call" href="tel:777000333" aria-label="اتصال بـ كافيه الأندلس"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></li>
+      <li class="pos" data-q="صيدلية النور الحديثة التقاطع الشرقي، عمارة السلام"><div><h3>صيدلية النور الحديثة</h3><p>التقاطع الشرقي، عمارة السلام</p><p class="hours">الدوام: 24 ساعة</p></div><a class="call" href="tel:777000444" aria-label="اتصال بـ صيدلية النور الحديثة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></li>
+    </ul>
+    <p class="empty" id="posEmpty" hidden>لا توجد نقطة بيع بهذا الاسم. جرّب اسم الشارع.</p>
+  </div>
+</div>
+<div class="modal" id="supportModal" role="dialog" aria-modal="true" aria-labelledby="supportTitle" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="supportTitle">الدعم الفني</h2><button type="button" class="close" data-close aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <ul class="pos-list"><li class="pos"><div><h3>خدمة العملاء</h3><p>الكروت والباقات والأعطال</p><p class="hours" dir="ltr">777 000 000</p></div><a class="call" href="tel:777000000" aria-label="اتصال بخدمة العملاء"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></li></ul>
+    <div class="faq">
+      <h3>الكرت لا يعمل؟</h3>
+      <ul>
+        <li><b>اكتب الرقم كما هو</b> بلا حروف زائدة. المسافات تُحذف تلقائياً.</li>
+        <li><b>كرت مستخدم على جهاز آخر:</b> افصل ذلك الجهاز أولاً ثم أعد المحاولة.</li>
+        <li><b>انتهت الباقة:</b> اشترِ كرتاً جديداً من أقرب نقطة بيع.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script>
+function hexMD5(str) {
+    function safe_add(x, y) { var lsw = (x & 0xFFFF) + (y & 0xFFFF); var msw = (x >> 16) + (y >> 16) + (lsw >> 16); return (msw << 16) | (lsw & 0xFFFF); }
+    function rol(num, cnt) { return (num << cnt) | (num >>> (32 - cnt)); }
+    function cmn(q, a, b, x, s, t) { return safe_add(rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b); }
+    function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+    function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+    function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+    function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+    function core_md5(x, len) {
+        x[len >> 5] |= 0x80 << ((len) % 32); x[(((len + 64) >>> 9) << 4) + 14] = len;
+        var a = 1732584193, b = -271733879, c = -1732584194, d = 271733878;
+        for (var i = 0; i < x.length; i += 16) {
+            var olda = a, oldb = b, oldc = c, oldd = d;
+            a = ff(a, b, c, d, x[i+0], 7 , -680876936); d = ff(d, a, b, c, x[i+1], 12, -389564586);
+            c = ff(c, d, a, b, x[i+2], 17,  606105819); b = ff(b, c, d, a, x[i+3], 22, -1044525330);
+            a = ff(a, b, c, d, x[i+4], 7 , -176418897); d = ff(d, a, b, c, x[i+5], 12,  1200080426);
+            c = ff(c, d, a, b, x[i+6], 17, -1473231341); b = ff(b, c, d, a, x[i+7], 22, -45705983);
+            a = ff(a, b, c, d, x[i+8], 7 ,  1770035416); d = ff(d, a, b, c, x[i+9], 12, -1958414417);
+            c = ff(c, d, a, b, x[i+10], 17, -42063); b = ff(b, c, d, a, x[i+11], 22, -1990404162);
+            a = ff(a, b, c, d, x[i+12], 7 ,  1804603682); d = ff(d, a, b, c, x[i+13], 12, -40341101);
+            c = ff(c, d, a, b, x[i+14], 17, -1502002290); b = ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+            a = gg(a, b, c, d, x[i+1], 5 , -165796510); d = gg(d, a, b, c, x[i+6], 9 , -1069501632);
+            c = gg(c, d, a, b, x[i+11], 14,  643717713); b = gg(b, c, d, a, x[i+0], 20, -373897302);
+            a = gg(a, b, c, d, x[i+5], 5 , -701558691); d = gg(d, a, b, c, x[i+10], 9 ,  38016083);
+            c = gg(c, d, a, b, x[i+15], 14, -660478335); b = gg(b, c, d, a, x[i+4], 20, -405537848);
+            a = gg(a, b, c, d, x[i+9], 5 ,  568446438); d = gg(d, a, b, c, x[i+14], 9 , -1019803690);
+            c = gg(c, d, a, b, x[i+3], 14, -187363961); b = gg(b, c, d, a, x[i+8], 20,  1163531501);
+            a = gg(a, b, c, d, x[i+13], 5 , -1444681467); d = gg(d, a, b, c, x[i+2], 9 , -51403784);
+            c = gg(c, d, a, b, x[i+7], 14,  1735328473); b = gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+            a = hh(a, b, c, d, x[i+5], 4 , -378558); d = hh(d, a, b, c, x[i+8], 11, -2022574463);
+            c = hh(c, d, a, b, x[i+11], 16,  1839030562); b = hh(b, c, d, a, x[i+14], 23, -35309556);
+            a = hh(a, b, c, d, x[i+1], 4 , -1530992060); d = hh(d, a, b, c, x[i+4], 11,  1272893353);
+            c = hh(c, d, a, b, x[i+7], 16, -155497632); b = hh(b, c, d, a, x[i+10], 23, -1094730640);
+            a = hh(a, b, c, d, x[i+13], 4 ,  681279174); d = hh(d, a, b, c, x[i+0], 11, -358537222);
+            c = hh(c, d, a, b, x[i+3], 16, -722521979); b = hh(b, c, d, a, x[i+6], 23,  76029189);
+            a = hh(a, b, c, d, x[i+9], 4 , -640364487); d = hh(d, a, b, c, x[i+12], 11, -421815835);
+            c = hh(c, d, a, b, x[i+15], 16,  530742520); b = hh(b, c, d, a, x[i+2], 23, -995338651);
+
+            a = ii(a, b, c, d, x[i+0], 6 , -198630844); d = ii(d, a, b, c, x[i+7], 10,  1126891415);
+            c = ii(c, d, a, b, x[i+14], 15, -1416354905); b = ii(b, c, d, a, x[i+5], 21, -57434055);
+            a = ii(a, b, c, d, x[i+12], 6 ,  1700485571); d = ii(d, a, b, c, x[i+3], 10, -1894986606);
+            c = ii(c, d, a, b, x[i+10], 15, -1051523); b = ii(b, c, d, a, x[i+1], 21, -2054922799);
+            a = ii(a, b, c, d, x[i+8], 6 ,  1873313359); d = ii(d, a, b, c, x[i+15], 10, -30611744);
+            c = ii(c, d, a, b, x[i+6], 15, -1560198380); b = ii(b, c, d, a, x[i+13], 21,  1309151649);
+            a = ii(a, b, c, d, x[i+4], 6 , -145523070); d = ii(d, a, b, c, x[i+11], 10, -1120210379);
+            c = ii(c, d, a, b, x[i+2], 15,  718787259); b = ii(b, c, d, a, x[i+9], 21, -343485551);
+
+            a = safe_add(a, olda); b = safe_add(b, oldb); c = safe_add(c, oldc); d = safe_add(d, oldd);
+        }
+        return [a, b, c, d];
+    }
+    function str2binl(str) {
+        var bin = []; var mask = (1 << 8) - 1;
+        for (var i = 0; i < str.length * 8; i += 8) bin[i >> 5] |= (str.charCodeAt(i / 8) & mask) << (i % 32);
+        return bin;
+    }
+    function binl2hex(binarray) {
+        var hex_tab = "0123456789abcdef"; var str = "";
+        for (var i = 0; i < binarray.length * 4; i++) {
+            str += hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) + hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8)) & 0xF);
+        }
+        return str;
+    }
+    return binl2hex(core_md5(str2binl(str), str.length * 8));
+}
+
+(function(){
+var $=function(id){return document.getElementById(id)};
+var input=$('voucherCode'),form=$('loginForm'),btn=$('btnSubmit'),btnText=$('btnSubmitText'),count=$('charCount'),wrap=$('fieldWrap'),clientBanner=$('clientErrorBanner');
+var LABEL=btnText.textContent,COOLDOWN_MS=3000,busy=false;
+var ERRORS=[
+ ['invalid username or password','رقم الكرت غير صحيح. راجع الرقم وحاول مرة أخرى.'],
+ ['uptime limit','انتهى وقت هذا الكرت. اشترِ كرتاً جديداً من أقرب نقطة بيع.'],
+ ['traffic limit','انتهت بيانات هذا الكرت. اشترِ كرتاً جديداً من أقرب نقطة بيع.'],
+ ['no more sessions','هذا الكرت مستخدم الآن على جهاز آخر. افصله هناك ثم حاول.'],
+ ['already authorizing','طلبك السابق قيد المعالجة. انتظر لحظات ثم حاول.'],
+ ['not responding','الخادم لا يستجيب الآن. حاول بعد قليل.']
+];
+function swapText(el,txt){if(el.textContent===txt)return;el.textContent=txt;el.classList.remove('swap');void el.offsetWidth;el.classList.add('swap')}
+function plural(n){if(n===1)return 'خانة واحدة';if(n===2)return 'خانتان';return n+(n>=3&&n<=10?' خانات':' خانة')}
+function clean(v){return v.replace(/\s+/g,'')}
+function group(v){return clean(v).replace(/(.{4})(?=.)/g,'$1 ')}
+function updateCount(){var n=clean(input.value).length;count.textContent=n?plural(n):''}
+function showClientError(msg){$('clientErrorMsg').textContent=msg;clientBanner.hidden=false;input.classList.add('is-error');input.setAttribute('aria-invalid','true');input.classList.remove('is-shaking');void input.offsetWidth;input.classList.add('is-shaking');input.focus()}
+function clearClientError(){clientBanner.hidden=true;input.classList.remove('is-error');input.removeAttribute('aria-invalid')}
+function setBusy(on){busy=on;btn.disabled=on;btn.classList.toggle('is-busy',on);swapText(btnText,on?'جارٍ التحقق من الكرت…':LABEL)}
+input.addEventListener('input',function(){if(input.selectionStart===input.value.length){var g=group(input.value);if(g!==input.value)input.value=g}updateCount();if(!clientBanner.hidden)clearClientError()});
+var tk=$('tickerToggle');
+if(tk)tk.addEventListener('click',function(){var on=tk.parentNode.classList.toggle('is-paused');tk.setAttribute('aria-pressed',on?'true':'false')});
+input.addEventListener('animationend',function(){input.classList.remove('is-shaking')});
+form.addEventListener('submit',function(e){
+ e.preventDefault();
+ var val=clean(input.value);
+ if(!val){showClientError('اكتب رقم الكرت أولاً.');return}
+ if(busy)return;
+ setBusy(true);
+ setTimeout(function(){setBusy(false)},COOLDOWN_MS);
+ var chapId='$(chap-id)',chapChallenge='$(chap-challenge)',s=document.sendin;
+ s.username.value=val;
+ s.password.value=(chapId&&chapId.indexOf('$(')<0&&chapChallenge.indexOf('$(')<0)?hexMD5(chapId+val+chapChallenge):val;
+ s.submit();
+});
+window.addEventListener('pageshow',function(e){if(e.persisted)setBusy(false)});
+var errEl=$('errorMsgText'),raw=(errEl.textContent||'').replace(/^\s+|\s+$/g,'');
+if(raw&&raw.indexOf('$(')<0){
+ var low=raw.toLowerCase();
+ for(var i=0;i<ERRORS.length;i++){if(low.indexOf(ERRORS[i][0])>-1){errEl.textContent=ERRORS[i][1];break}}
+ $('serverErrorBanner').hidden=false;input.classList.add('is-error');
+}
+var pb=$('btnPaste');
+if(pb&&navigator.clipboard&&navigator.clipboard.readText&&window.isSecureContext){
+ pb.hidden=false;wrap.classList.add('has-paste');
+ pb.addEventListener('click',function(){navigator.clipboard.readText().then(function(t){if(t){input.value=clean(t);updateCount();clearClientError()}input.focus()}).catch(function(){input.focus()})});
+}
+if(window.self===window.top&&window.matchMedia&&window.matchMedia('(pointer:fine)').matches)input.focus();
+var ps=$('posSearch');
+function norm(s){return s.replace(/[\u0623\u0625\u0622]/g,'\u0627').replace(/\u0629/g,'\u0647').replace(/\u0649/g,'\u064a').toLowerCase()}
+if(ps)ps.addEventListener('input',function(){
+ var q=norm(ps.value.replace(/^\s+|\s+$/g,'')),items=document.querySelectorAll('#posList .pos'),shown=0;
+ for(var i=0;i<items.length;i++){var hit=norm(items[i].getAttribute('data-q')).indexOf(q)>-1;items[i].hidden=!hit;if(hit)shown++}
+ $('posEmpty').hidden=shown>0;
+});
+})();
+
+(function(){
+var $=function(id){return document.getElementById(id)};
+var openEl=null,lastFocus=null;
+function focusables(m){return m.querySelectorAll('a[href],button:not([disabled]),input:not([type=hidden])')}
+function openModal(id){var m=$(id);if(!m)return;lastFocus=document.activeElement;m.hidden=false;void m.offsetWidth;m.classList.add('is-open');document.body.classList.add('modal-open');openEl=m;var c=m.querySelector('.close');setTimeout(function(){c&&c.focus()},60)}
+function closeModal(){if(!openEl)return;var m=openEl;openEl=null;m.classList.remove('is-open');m.classList.add('is-closing');document.body.classList.remove('modal-open');setTimeout(function(){m.classList.remove('is-closing');m.hidden=true},160);if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-open],[data-close]');if(!t)return;if(t.hasAttribute('data-open'))openModal(t.getAttribute('data-open'));else closeModal()});
+document.addEventListener('keydown',function(e){
+ if(!openEl)return;
+ if(e.key==='Escape'||e.key==='Esc'){closeModal();return}
+ if(e.key!=='Tab')return;
+ var f=focusables(openEl);if(!f.length)return;
+ var first=f[0],last=f[f.length-1];
+ if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+ else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
+// One request only: the router's firewall bans IPs that open too many new HTTP connections per minute.
+var ms=$('netMs');
+if(ms&&window.fetch&&/^https?:$/.test(location.protocol)){
+ var t0=Date.now();
+ fetch(location.pathname+'?rtt='+t0,{method:'HEAD',cache:'no-store'}).then(function(){ms.textContent=(Date.now()-t0)+'ms';ms.hidden=false}).catch(function(){});
+}
+})();
+</script>
+</body>
+</html>
