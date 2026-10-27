@@ -100,6 +100,10 @@
 :global ebApiPass ""
 :global ebApiAllow ""
 
+# ---- صفحة المطوّر ----
+# رابط "تم التطوير بواسطة zeidexsoft" أسفل الصفحات يفتح قبل تسجيل الدخول. اتركه "" لإغلاقه
+:global ebDevHost "zeidexlink.zeidexsoft.com"
+
 # ---- الصيانة ----
 :global ebBackupTime "02:30:00"
 :global ebCleanupTime "03:00:00"
@@ -313,6 +317,10 @@ set [find where name="eb-expire-check"] policy=read,write,test source=":local no
 }
 :foreach h in=$ebShillingAppHosts do={
     /ip hotspot walled-garden ip add dst-host=$h action=accept comment="ElBasha: Shilling app"
+}
+:if ([:len $ebDevHost] > 0) do={
+    /ip hotspot walled-garden add dst-host=$ebDevHost action=allow comment="ElBasha: developer page"
+    /ip hotspot walled-garden ip add dst-host=$ebDevHost action=accept comment="ElBasha: developer page"
 }
 
 

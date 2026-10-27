@@ -45,6 +45,7 @@
   npm i --no-save playwright && npx playwright install chromium   # مرة واحدة، ويلزم ffmpeg
   node scripts/make-previews.mjs                                 # أو: node scripts/make-previews.mjs luxury-gold
   ```
+  تتولد تلقائياً أيضاً عبر GitHub Actions ([`previews.yml`](.github/workflows/previews.yml)) عند أي تعديل على القوالب أو الخطوط في `main`.
 - **معرض القوالب:** [`gallery.html`](gallery.html) يعرض كل قالب حياً داخل إطار هاتف (`http://localhost:3000/gallery.html`).
 
 ---
