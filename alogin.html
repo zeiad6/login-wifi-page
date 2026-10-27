@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
-<meta http-equiv="refresh" content="2; url=$(link-redirect)">
-<title>تم الاتصال | Zeidex Terminal</title>
+<meta name="theme-color" content="#f3ede1">
+<meta name="color-scheme" content="light">
+<!-- صفحة الترحيب: غيّر الرابط إلى صفحة الشبكة على فيسبوك أو إنستغرام -->
+<meta http-equiv="refresh" content="4; url=https://www.facebook.com/elbasha.net">
+<title>تم الاتصال | شبكة الباشا نت</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
@@ -121,7 +122,7 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
 .btn-ghost:hover{background:var(--danger-bg)}
 .btn-ghost:active{transform:scale(.98)}
 .progress{height:4px;margin-top:22px;border-radius:4px;background:var(--surface-2);overflow:hidden}
-.progress i{display:block;height:100%;background:var(--accent-2);transform-origin:right;animation:fill 2s linear both}
+.progress i{display:block;height:100%;background:var(--accent-2);transform-origin:right;animation:fill 4s linear both}
 .done-mark{width:56px;height:56px;margin-bottom:18px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--accent);color:var(--accent-ink)}
 .done-mark svg{width:28px;height:28px}
 .check-path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .5s .2s var(--ease) forwards}
@@ -149,45 +150,53 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
 @keyframes draw{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}}
 
-/* ── OLED Matrix ── */
-:root{--tk-bg:transparent;--tk-border:1px solid #12432a;--tk-ink:#9fdcb9;--tk-cta-bg:#0a1f13;--tk-cta-ink:#2bff88;--bg:#000;--ink:#d9ffe9;--muted:#6f9f85;--surface:#020604;--surface-solid:#030905;--surface-2:#06120b;--surface-3:#0a1f13;--line:#12432a;--accent:#2bff88;--accent-ink:#001409;--accent-2:#2bff88;--ok:#2bff88;--focus:#2bff88;--danger:#ff5555;--danger-bg:rgba(255,85,85,.08);--danger-ink:#ffbdbd;--danger-line:rgba(255,85,85,.4);--field-bg:#000;--field-line:#1d6b42;--focus-ring:0 0 0 1px #2bff88,0 0 24px rgba(43,255,136,.3);--chip-bg:#0a1f13;--chip-ink:#2bff88;--busy-bg:#06120b;--busy-ink:#6f9f85;--radius:6px;--radius-sm:3px;--font:system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-display:system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-num:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;--price:#2bff88;--scrim:rgba(0,0,0,.82);--sheet-border:1px solid #12432a;--sheet-shadow:0 0 60px rgba(43,255,136,.08)}
-.bg{background:radial-gradient(ellipse at center,transparent 45%,#000 92%),repeating-linear-gradient(0deg,rgba(43,255,136,.035) 0 1px,transparent 1px 3px)}
-.rain{position:absolute;inset:0;z-index:-1}
-.rain i{position:absolute;top:-80%;left:var(--x);font:normal 15px/1.2 ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;font-style:normal;color:#2bff88;opacity:var(--o);writing-mode:vertical-lr;text-orientation:upright;animation:rain var(--d) linear infinite;animation-delay:var(--s)}
-@keyframes rain{to{transform:translateY(240vh)}}
-.brand-name,.net,.ticker-run{font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace}
-.panel::before{content:"zeidex@gateway:~$ ./login";display:block;padding:11px 18px;border-bottom:1px solid var(--line);font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;font-size:.78rem;color:var(--muted);direction:ltr;text-align:left}
-h1::before{content:"$";font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;color:var(--accent);margin-inline-end:.35em}
-h1::after{content:"";display:inline-block;width:.5em;height:.95em;background:var(--accent);margin-inline-start:.25em;vertical-align:-.1em;animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.field-input{color:#2bff88;caret-color:#2bff88;text-shadow:0 0 12px rgba(43,255,136,.55)}
-.submit{font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.02em}
-.submit:hover:not(:disabled){box-shadow:0 0 0 1px #2bff88,0 0 36px rgba(43,255,136,.45)}
-.action{background:transparent;border:1px solid var(--line)}
-.action:hover{background:#06120b;border-color:#2bff88}
-.plan{background:transparent;border-radius:0;border-inline-start:2px solid #1d6b42}
-.plan:hover{background:#06120b;border-color:#2bff88}
-.plan-price{text-shadow:0 0 14px rgba(43,255,136,.45)}
-.stat{background:transparent;border:1px solid var(--line)}
-.stat dd{color:#2bff88}
+/* ── Luxury Champagne ── */
+:root{--tk-bg:transparent;--tk-border:1px solid #d6c59f;--tk-price:#7c5d22;--tk-dot:#9a7633;--bg:#f3ede1;--ink:#1d1913;--muted:#665d4d;--surface:#fbf8f1;--surface-solid:#fbf8f1;--surface-2:#f2ebdc;--surface-3:#e9dec6;--line:#d6c59f;--accent:#1d1913;--accent-ink:#f6f0e4;--accent-2:#9a7633;--accent-line:#9a7633;--ok:#9a7633;--focus:#9a7633;--danger:#9b1c1c;--danger-bg:#f6e3dc;--danger-ink:#6b1313;--danger-line:#e2b8aa;--field-bg:#fffdf8;--field-line:#d9caa7;--focus-ring:0 0 0 4px rgba(154,118,51,.16);--chip-bg:#efe6d2;--chip-ink:#5e4720;--busy-bg:#d9cfba;--busy-ink:#4f4738;--radius:2px;--radius-sm:2px;--font:"Noto Naskh Arabic","Amiri","Traditional Arabic","Times New Roman",serif;--font-display:"Noto Naskh Arabic","Amiri","Traditional Arabic","Times New Roman",serif;--font-num:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--h1:clamp(2rem,5.5vw,2.9rem);--h1-weight:700;--h1-track:0;--price:#7c5d22;--panel-border:1px solid #d6c59f;--panel-shadow:0 40px 80px -40px rgba(70,50,15,.35);--scrim:rgba(29,25,19,.45);--sheet-shadow:0 30px 70px rgba(29,25,19,.25);--page-max:640px}
+.bg{background:radial-gradient(90% 60% at 50% 0%,#fbf7ee,transparent 70%)}
+.topbar{flex-direction:column;justify-content:center;gap:10px;text-align:center}
+.brand{flex-direction:column;gap:8px}
+.brand-mark{width:66px;height:66px}
+.brand-name{font-family:var(--font-num);font-weight:400;font-size:1.05rem;letter-spacing:.42em;text-transform:uppercase;margin-inline-end:-.42em}
+@media (min-width:960px){.stage{grid-template-columns:minmax(0,1fr)}}
+.panel{outline:1px solid #d6c59f;outline-offset:7px;margin:8px}
+.panel-in{text-align:center;padding:clamp(28px,6vw,52px)}
+.lede{margin-inline:auto}
+.field-label{justify-content:center;gap:10px}
+.field-input{font-weight:400;font-size:1.85rem;letter-spacing:.22em}
+.submit:hover:not(:disabled){background:#9a7633;color:#fff}
+.alert{text-align:start}
+.action{background:transparent;border:1px solid #d6c59f}
+.action:hover{background:#efe6d2}
+.action svg{color:#9a7633}
+.plans{text-align:center;padding-top:8px}
+.plans h2{font-size:1.6rem;font-weight:700}
+.plan-list{gap:0;text-align:start}
+.plan{background:none;border-radius:0;padding:14px 4px;align-items:baseline}
+.plan:hover{background:none}
+.lead{display:block;flex:1;min-width:24px;border-bottom:1.5px dotted #b9a473;transform:translateY(-6px)}
+.plan-price{font-weight:400;font-size:1.4rem}
+.foot{justify-content:center;text-align:center}
+.call{background:#1d1913;color:#f6f0e4}
+.stat{text-align:start}
+.done-mark{margin-inline:auto}
 </style>
 </head>
-<body class="theme-oled-matrix is-solo">
-<div class="bg" aria-hidden="true"><div class="rain"><i style="--x:2.9%;--d:10.9s;--s:-7.5s;--o:0.17">٥٦١٢٥٦٠0٧٤٣٩٧٠٥٢٨١٦٥٢٠11١٥</i><i style="--x:5.7%;--d:13.1s;--s:-12.3s;--o:0.18">٨٣٢1٥٢٦٣١٩٤٤٠1٢0٥٢٧٤٩٧١٢٥١</i><i style="--x:13.3%;--d:16.4s;--s:-4.8s;--o:0.23">1٣٥٥٥0٥٥٣٢٨١٣٩0110٨٧٦٠٣٤٢٤</i><i style="--x:18.4%;--d:17.3s;--s:-15.2s;--o:0.10">٠٤٧٥١1٥0٧٥١٩0٣٠١٨٨٧0٢٩٢٠٠٠</i><i style="--x:23.2%;--d:12.6s;--s:-1.4s;--o:0.22">٥٠٣٥٠٤٢٣٩١١٠٧١٤١٥٤٠٩٥٨٤1٨٧</i><i style="--x:29.6%;--d:18.9s;--s:-11.4s;--o:0.21">٠٠٢٣٠٧٥٤٦0٦٥١0٧٥0٨٥10٤٥٨٩0</i><i style="--x:33.7%;--d:12.9s;--s:-3.3s;--o:0.19">٥٠1٦٧٤٩٩٦٥0٨٠٤٥1٧١٨٢٢٦٣٠1٦</i><i style="--x:40.4%;--d:11.2s;--s:-7.0s;--o:0.09">٢٨٣0٧٤٩٢٤٥0٦١١٥٣٤٦٣٠٠٨٥٦0١</i><i style="--x:45.8%;--d:10.6s;--s:-16.6s;--o:0.18">١٨0٠٦٣٤٢٨٥٢٧01٤1٩٤١٢١٨٧1٣٤</i><i style="--x:51.7%;--d:17.6s;--s:-7.9s;--o:0.09">٩٨٣٧١٨1٧٤٤٦٦١٤٩٨٦٦٧٤١١٤1٩1</i><i style="--x:57.4%;--d:9.0s;--s:-11.2s;--o:0.10">0٤٢٢٠٤٤1٩٧٦٠٥١٥٣٢٦٦٢٧٧٥١٠٥</i><i style="--x:61.6%;--d:11.5s;--s:-2.2s;--o:0.13">١٣٥٨10٢٠010٩٦0٠٣٧٠٧٤٣1٧١٨٨</i><i style="--x:69.5%;--d:11.6s;--s:-11.1s;--o:0.15">٠٣٥٦٦1١٤٠١١٣١٣١٤٣٩٥٦0٨٤٨٥٣</i><i style="--x:74.1%;--d:16.0s;--s:-13.8s;--o:0.09">٥0١٥٥٢٩٨٢٨١٥٩٠٤٣٠٥٨٣٠٥٥٦٠٩</i><i style="--x:80.3%;--d:11.5s;--s:-4.3s;--o:0.23">1٩1٢٣٤0٨0٤٤٩٢٩٦٧٤٧١٥٤١٦٢٠1</i><i style="--x:84.1%;--d:14.6s;--s:-12.7s;--o:0.19">٢٨٧٤0١١٠٨0٧٠٠٢٣1٠٠٢٦٧١٣٥١٥</i><i style="--x:90.5%;--d:12.1s;--s:-14.9s;--o:0.24">1٣0٧٨٠١٣٦٩٦٩10٢٢٨٣٩٤٤٢٣11٠</i><i style="--x:95.6%;--d:10.7s;--s:-5.0s;--o:0.16">٩٢٤٨٦٩٦٣٩٩0٨٨٧٠٩1١٥٥٤١٤٣٢١</i></div></div>
+<body class="theme-luxury-gold is-solo">
+<div class="bg" aria-hidden="true"></div>
 <div class="page">
 <header class="topbar rise" style="--i:0">
-  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="12" fill="#000" stroke="#2bff88" stroke-width="2"/><path d="M21 22h22L22 42h22" fill="none" stroke="#2bff88" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">Zeidex</span></div>
-  <span class="net"><span class="dot" aria-hidden="true"></span><span>شبكة Zeidex</span><span class="net-ms" id="netMs" hidden></span></span>
+  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30.5" fill="none" stroke="#9a7633" stroke-width="1.2"/><circle cx="32" cy="32" r="26.5" fill="none" stroke="#9a7633" stroke-width=".6"/><path d="M17 41l-2-17 9.5 7.5L32 19l7.5 12.5L49 24l-2 17z" fill="none" stroke="#1d1913" stroke-width="2.4" stroke-linejoin="round"/></svg><span class="brand-name">El Basha</span></div>
+  <span class="net"><span class="dot" aria-hidden="true"></span><span>شبكة الباشا نت</span><span class="net-ms" id="netMs" hidden></span></span>
 </header>
 <div class="stage"><main class="panel solo rise" style="--i:1"><div class="panel-in">
     <div class="done-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="check-path" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
     <h1>تم الاتصال بنجاح</h1>
-    <p class="lede">ننقلك الآن إلى الصفحة التي طلبتها.</p>
+    <p class="lede">أهلاً بك في الباشا نت. ننقلك إلى صفحتنا لتصلك العروض والباقات الجديدة أولاً بأول.</p>
     <div class="progress" aria-hidden="true"><i></i></div>
-    <a href="$(link-redirect)" class="submit"><span>المتابعة الآن</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+    <a href="$(link-redirect)" class="submit"><span>تخطَّ إلى صفحتك</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
     <p class="hint"><a href="$(link-status)">عرض الوقت المتبقي والاستهلاك</a></p>
 </div></main></div>
-<footer class="foot rise" style="--i:2"><span>Zeidex · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
+<footer class="foot rise" style="--i:2"><span>الباشا نت · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
 
 </div>
 

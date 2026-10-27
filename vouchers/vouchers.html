@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طباعة كروت الباشا نت</title>
+<!-- مكتبة QR محلية (بلا إنترنت). يجب أن يبقى الملف qrcode.min.js بجوار هذه الصفحة -->
+<script src="qrcode.min.js"></script>
+<style>
+/* ===== ألوان الهوية: غيّرها هنا فقط ===== */
+:root{
+  --gold:#b8892c;      /* ذهبي الطباعة (أغمق قليلاً من ذهبي الشاشة ليظهر على الورق) */
+  --gold-soft:#e9d9a8;
+  --ink:#0b0a08;       /* أسود عميق */
+  --paper:#fff;
+  --cut:#9a9a9a;       /* لون خطوط القص */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;background:#efece4;color:var(--ink)}
+
+/* ===== لوحة التحكم (لا تُطبع) ===== */
+.ctrl{max-width:1100px;margin:16px auto;padding:16px;background:#fff;border:1px solid #ddd;border-radius:12px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ctrl h1{grid-column:1/-1;font-size:1.2rem}
+.ctrl label{display:grid;gap:4px;font-size:.85rem;font-weight:600}
+.ctrl input,.ctrl select,.ctrl textarea{font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;width:100%}
+.ctrl textarea{min-height:120px;direction:ltr;font-family:ui-monospace,Menlo,Consolas,monospace}
+.ctrl .wide{grid-column:1/-1}
+.ctrl .row{display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1}
+.ctrl button{font:inherit;font-weight:700;padding:10px 16px;border:0;border-radius:8px;background:var(--ink);color:var(--gold-soft);cursor:pointer}
+.ctrl button.alt{background:#ddd;color:var(--ink)}
+.ctrl .note{grid-column:1/-1;font-size:.8rem;color:#555}
+
+/* ===== صفحة A4: 3 أعمدة × 7 صفوف = 21 كرتاً ===== */
+@page{size:A4;margin:8mm}
+.sheet{width:194mm;margin:0 auto 16px;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:38mm;background:var(--paper);break-after:page}
+.sheet:last-child{break-after:auto}
+
+/* ===== الكرت ===== */
+.card{position:relative;outline:.25mm dashed var(--cut);padding:2.6mm 3mm;display:grid;grid-template-columns:1fr 23mm;grid-template-rows:auto 1fr auto;column-gap:2.5mm;overflow:hidden;break-inside:avoid}
+.card::before{content:"";position:absolute;inset-inline:0;top:0;height:1.2mm;background:linear-gradient(90deg,var(--gold),var(--gold-soft),var(--gold))}
+.head{display:flex;align-items:center;gap:1.6mm;font-weight:800;font-size:9.5pt}
+.head svg{width:6mm;height:6mm;flex:none}
+.pkg{margin-inline-start:auto;font-size:7pt;font-weight:700;padding:.4mm 1.6mm;border:.25mm solid var(--gold);border-radius:1mm;color:var(--gold);white-space:nowrap}
+.code-box{align-self:center;text-align:center}
+.code-box small{display:block;font-size:6.2pt;color:#666}
+.code{direction:ltr;font-family:ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;font-size:13pt;font-weight:800;letter-spacing:.06em;border:.3mm solid var(--ink);border-radius:1.2mm;padding:.8mm 1mm;background:#faf7ee}
+.meta{display:flex;justify-content:space-between;font-size:7pt;font-weight:600}
+.meta b{color:var(--gold)}
+.qr{grid-column:2;grid-row:1/4;display:grid;place-items:center;align-content:center;gap:.6mm;text-align:center;font-size:5.6pt;color:#444}
+.qr svg{width:22mm;height:22mm;display:block}
+.qr .na{width:22mm;height:22mm;display:grid;place-items:center;border:.25mm dashed #999}
+
+@media print{
+  body{background:none}
+  .ctrl{display:none}
+  .sheet{margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<form class="ctrl" id="ctrl" onsubmit="return false">
+  <h1>طباعة كروت الباشا نت</h1>
+
+  <!-- الباقات: طابقها مع ebPackages في scripts/elbasha_turnkey.rsc -->
+  <label>الباقة
+    <select id="pkg"></select>
+  </label>
+  <label>السعر المطبوع<input id="price"></label>
+  <label>مدة الصلاحية المطبوعة<input id="validity"></label>
+  <label>عنوان الهوتسبوت (dns-name)<input id="host" value="elbasha.net" dir="ltr"></label>
+
+  <label class="wide">أرقام الكروت (رقم في كل سطر)
+    <textarea id="codes" placeholder="4821930571&#10;7710458392"></textarea>
+  </label>
+
+  <label>عدد الكروت المولّدة<input id="genCount" type="number" min="1" max="2100" value="21"></label>
+  <label>طول الرقم (10 أو أكثر)<input id="genLen" type="number" min="8" max="16" value="10"></label>
+  <div class="row">
+    <button type="button" id="btnGen" class="alt">توليد أرقام عشوائية</button>
+    <button type="button" id="btnRender">تجهيز الكروت</button>
+    <button type="button" id="btnPrint">طباعة</button>
+  </div>
+
+  <label class="wide">أوامر إضافة الكروت المولّدة إلى الراوتر (انسخها والصقها في Terminal)
+    <textarea id="rsc" readonly></textarea>
+  </label>
+  <p class="note">الرمز QR يفتح صفحة الدخول ويُدخل الرقم تلقائياً بتشفير CHAP، فلا يكتب العميل شيئاً. اطبع بمقياس 100% (بلا "ملاءمة للصفحة") لتبقى مقاسات القص صحيحة.</p>
+</form>
+
+<div id="out"></div>
+
+<script>
+(function(){
+// ===== الباقات: الاسم المعروض، بروفايل الراوتر، السعر، الصلاحية =====
+var PACKAGES=[
+  {label:'باقة 1M',profile:'eb-1M',price:'200 ريال',validity:'يوم واحد'},
+  {label:'باقة 2M',profile:'eb-2M',price:'500 ريال',validity:'3 أيام'},
+  {label:'باقة 4M',profile:'eb-4M',price:'1500 ريال',validity:'أسبوع'}
+];
+var PER_SHEET=21;
+var CROWN='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3L61 32 32 61 3 32z" fill="#0b0a08"/><path d="M19 42l-2-16 8 6 7-11 7 11 8-6-2 16z" fill="#d4a945"/></svg>';
+
+var $=function(id){return document.getElementById(id)};
+var pkg=$('pkg');
+PACKAGES.forEach(function(p,i){var o=document.createElement('option');o.value=i;o.textContent=p.label;pkg.appendChild(o)});
+function applyPkg(){var p=PACKAGES[pkg.value];$('price').value=p.price;$('validity').value=p.validity}
+pkg.addEventListener('change',applyPkg);applyPkg();
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+// Same 4-digit grouping as the login field, so the printed code matches what the customer types.
+function group(v){return v.replace(/(.{4})(?=.)/g,'$1 ')}
+function codes(){return $('codes').value.split(/\r?\n/).map(function(s){return s.replace(/\s+/g,'')}).filter(Boolean)}
+
+function qrSvg(text){
+  if(typeof qrcode!=='function')return '<div class="na">QR</div>';
+  var q=qrcode(0,'M');q.addData(text);q.make();
+  return q.createSvgTag({cellSize:2,margin:0,scalable:true});
+}
+
+function render(){
+  var list=codes(),p=PACKAGES[pkg.value],host=$('host').value.replace(/^\s+|\s+$/g,''),out=$('out');
+  var price=esc($('price').value),validity=esc($('validity').value),html='';
+  for(var i=0;i<list.length;i+=PER_SHEET){
+    html+='<section class="sheet">';
+    list.slice(i,i+PER_SHEET).forEach(function(c){
+      var url='http://'+host+'/login?v='+encodeURIComponent(c);
+      html+='<article class="card">'+
+        '<div class="head">'+CROWN+'<span>الباشا نت</span><span class="pkg">'+esc(p.label)+'</span></div>'+
+        '<div class="code-box"><small>رقم الكرت</small><div class="code">'+esc(group(c))+'</div></div>'+
+        '<div class="meta"><span>السعر: <b>'+price+'</b></span><span>الصلاحية: <b>'+validity+'</b></span></div>'+
+        '<div class="qr">'+qrSvg(url)+'<span>امسح للدخول</span></div>'+
+      '</article>';
+    });
+    html+='</section>';
+  }
+  out.innerHTML=html;
+}
+
+// Uniform random digits: bytes >= 250 are discarded so every digit 0-9 is equally likely.
+function randomCode(len){
+  var s='',b=new Uint8Array(1);
+  while(s.length<len){crypto.getRandomValues(b);if(b[0]<250)s+=b[0]%10}
+  return s;
+}
+$('btnGen').addEventListener('click',function(){
+  var n=Math.min(2100,Math.max(1,+$('genCount').value||0)),len=Math.min(16,Math.max(8,+$('genLen').value||10));
+  var seen={},list=[];
+  while(list.length<n){var c=randomCode(len);if(!seen[c]){seen[c]=1;list.push(c)}}
+  $('codes').value=list.join('\n');
+  var p=PACKAGES[pkg.value],tag='eb-batch-'+new Date().toISOString().slice(0,10);
+  $('rsc').value=list.map(function(c){return '/ip hotspot user add name="'+c+'" password="'+c+'" profile="'+p.profile+'" comment="'+tag+'"'}).join('\n');
+  render();
+});
+$('btnRender').addEventListener('click',render);
+$('btnPrint').addEventListener('click',function(){render();window.print()});
+})();
+</script>
+</body>
+</html>

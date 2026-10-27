@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# ZEIDEX HOTSPOT THEME SWITCHER
+# EL BASHA NET HOTSPOT THEME SWITCHER
 # Copies a theme's login, status, alogin and logout pages to the project root.
 # Usage: ./scripts/switch-theme.sh [theme-name]
 # Available:
