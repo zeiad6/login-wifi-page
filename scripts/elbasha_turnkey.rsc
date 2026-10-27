@@ -100,6 +100,10 @@
 :global ebApiPass ""
 :global ebApiAllow ""
 
+# ---- صفحة المطوّر ----
+# رابط "تم التطوير بواسطة zeidexsoft" أسفل الصفحات يفتح قبل تسجيل الدخول. اتركه "" لإغلاقه
+:global ebDevHost "zeidexlink.zeidexsoft.com"
+
 # ---- الصيانة ----
 :global ebBackupTime "02:30:00"
 :global ebCleanupTime "03:00:00"
@@ -314,6 +318,10 @@ set [find where name="eb-expire-check"] policy=read,write,test source=":local no
 :foreach h in=$ebShillingAppHosts do={
     /ip hotspot walled-garden ip add dst-host=$h action=accept comment="ElBasha: Shilling app"
 }
+:if ([:len $ebDevHost] > 0) do={
+    /ip hotspot walled-garden add dst-host=$ebDevHost action=allow comment="ElBasha: developer page"
+    /ip hotspot walled-garden ip add dst-host=$ebDevHost action=accept comment="ElBasha: developer page"
+}
 
 
 # ==============================================================================
@@ -328,6 +336,13 @@ set [find where name="eb-expire-check"] policy=read,write,test source=":local no
             /tool fetch url=($ebRepo . "/" . $ebRef . "/themes/" . $ebTheme . "/" . $f) \
                 dst-path=($ebHtmlDir . "/" . $f) check-certificate=yes
         } on-error={ :put ("ElBasha: could not download " . $f . " (check certificates / internet)") }
+    }
+    # الخطوط العربية: يخدمها الراوتر نفسه، فتظهر قبل أن يملك المشترك إنترنت (نحو 170KB)
+    :foreach f in={"eb-kufi-400.woff2";"eb-kufi-600.woff2";"eb-kufi-800.woff2";"eb-naskh-400.woff2";"eb-naskh-700.woff2"} do={
+        :do {
+            /tool fetch url=($ebRepo . "/" . $ebRef . "/fonts/" . $f) \
+                dst-path=($ebHtmlDir . "/fonts/" . $f) check-certificate=yes
+        } on-error={ :put ("ElBasha: could not download font " . $f) }
     }
 }
 

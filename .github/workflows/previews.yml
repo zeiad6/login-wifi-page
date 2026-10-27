@@ -1,0 +1,51 @@
+name: Theme previews
+
+# Regenerates previews/<theme>.png and previews/<theme>.webp whenever a theme or the fonts change,
+# and commits them back. Commits made with GITHUB_TOKEN do not re-trigger workflows, so no loop.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "themes/**"
+      - "fonts/**"
+      - "scripts/make-previews.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: previews
+  cancel-in-progress: true
+
+jobs:
+  previews:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright Chromium and ffmpeg
+        run: |
+          npm i --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Generate previews
+        run: node scripts/make-previews.mjs
+
+      - name: Commit previews
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add previews
+          if git diff --cached --quiet; then
+            echo "Previews unchanged"
+          else
+            git commit -m "Regenerate theme previews"
+            git push
+          fi

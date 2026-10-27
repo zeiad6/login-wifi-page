@@ -7,6 +7,8 @@
 <!-- مكتبة QR محلية (بلا إنترنت). يجب أن يبقى الملف qrcode.min.js بجوار هذه الصفحة -->
 <script src="qrcode.min.js"></script>
 <style>
+@font-face{font-family:"EB Kufi";src:url(../fonts/eb-kufi-400.woff2) format("woff2");font-weight:300 500;font-display:swap}
+@font-face{font-family:"EB Kufi";src:url(../fonts/eb-kufi-800.woff2) format("woff2");font-weight:600 900;font-display:swap}
 /* ===== ألوان الهوية: غيّرها هنا فقط ===== */
 :root{
   --gold:#b8892c;      /* ذهبي الطباعة (أغمق قليلاً من ذهبي الشاشة ليظهر على الورق) */
@@ -16,7 +18,7 @@
   --cut:#9a9a9a;       /* لون خطوط القص */
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;background:#efece4;color:var(--ink)}
+body{font-family:"EB Kufi","Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;background:#efece4;color:var(--ink)}
 
 /* ===== لوحة التحكم (لا تُطبع) ===== */
 .ctrl{max-width:1100px;margin:16px auto;padding:16px;background:#fff;border:1px solid #ddd;border-radius:12px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
@@ -100,7 +102,7 @@ var PACKAGES=[
   {label:'باقة 4M',profile:'eb-4M',price:'1500 ريال',validity:'أسبوع'}
 ];
 var PER_SHEET=21;
-var CROWN='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3L61 32 32 61 3 32z" fill="#0b0a08"/><path d="M19 42l-2-16 8 6 7-11 7 11 8-6-2 16z" fill="#d4a945"/></svg>';
+var CROWN='<svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#0b0a08"/><g fill="#d6ab4a"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#d6ab4a" stroke-width="7.5" stroke-linecap="round"/></g></svg>';
 
 var $=function(id){return document.getElementById(id)};
 var pkg=$('pkg');
