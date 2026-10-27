@@ -1,9 +1,16 @@
-# 👑 الباشا نت | El Basha Net — MikroTik Hotspot Turnkey
+<p align="center">
+  <img src="assets/logo.svg" width="520" alt="شعار الباشا نت - El Basha Net">
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![RouterOS](https://img.shields.io/badge/MikroTik-RouterOS_v6_%26_v7-blue.svg)](https://mikrotik.com)
-[![Offline](https://img.shields.io/badge/Dependencies-Zero_Offline-emerald.svg)](#)
-[![Security](https://img.shields.io/badge/Security-CHAP_MD5_%2B_Anti--Bruteforce-violet.svg)](#)
+<h1 align="center">الباشا نت | El Basha Net</h1>
+<p align="center"><b>قوالب هوتسبوت ميكروتك فاخرة + سكربت تجهيز كامل للشبكة</b></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-d6ab4a.svg" alt="MIT"></a>
+  <img src="https://img.shields.io/badge/MikroTik-RouterOS_v7-0b0a08.svg" alt="RouterOS v7">
+  <img src="https://img.shields.io/badge/Fonts-Self--hosted_Arabic-d6ab4a.svg" alt="Self-hosted fonts">
+  <img src="https://img.shields.io/badge/Login-CHAP_MD5_%2B_QR-0b0a08.svg" alt="CHAP + QR">
+</p>
 
 نظام قوالب هوتسبوت مايكروتك متعدد التصاميم الاحترافية لشبكة **الباشا نت (El Basha Net)** بنظام الكروت الفردي (Single Voucher Code) مع واجهة مدمجة لأماكن ونقاط بيع الكروت، وتشفير CHAP MD5 وحماية متكاملة ضد التخمين.
 
@@ -30,8 +37,14 @@
 - قائمة الباقات ظاهرة مباشرة، ونافذتا نقاط البيع (مع بحث يتجاهل الهمزات والتاء المربوطة) والدعم الفني.
 - دعم لوحة المفاتيح وقارئات الشاشة، واحترام إعداد `prefers-reduced-motion`.
 - طلب قياس زمن استجابة واحد فقط عند الفتح، حتى لا يُحظر المستخدم بقاعدة Anti-Brute Force.
+- خطوط عربية مضمّنة في [`fonts/`](fonts) (Noto Kufi Arabic للواجهات، Noto Naskh Arabic لقالب luxury-gold): ملفات woff2 مقتطعة بحجم 170KB يخدمها الراوتر نفسه، فتظهر قبل أن يملك المشترك إنترنت. الرخصة: [`fonts/OFL.txt`](fonts/OFL.txt).
+- دخول تلقائي بمسح رمز QR على الكرت، وصفحة ترحيب تنقل المشترك إلى صفحة الشبكة.
 
-- **المعاينات:** صور متحركة في `previews/<id>.webp` (خطأ الإدخال، تقسيم رقم الكرت، نافذة نقاط البيع) وصورة ثابتة في `previews/<id>.png`.
+- **المعاينات:** صور متحركة في `previews/<id>.webp` (خطأ الإدخال، تقسيم رقم الكرت، نافذة نقاط البيع) وصورة ثابتة في `previews/<id>.png`. لإعادة توليدها بعد أي تعديل:
+  ```bash
+  npm i --no-save playwright && npx playwright install chromium   # مرة واحدة، ويلزم ffmpeg
+  node scripts/make-previews.mjs                                 # أو: node scripts/make-previews.mjs luxury-gold
+  ```
 - **معرض القوالب:** [`gallery.html`](gallery.html) يعرض كل قالب حياً داخل إطار هاتف (`http://localhost:3000/gallery.html`).
 
 ---
@@ -66,6 +79,15 @@
 - نسخ احتياطي يومي للكروت واستهلاكها في ملفات الراوتر، وحذف يومي للكروت المنتهية، وإعادة تشغيل أسبوعية 4 فجراً، وWatchdog.
 - حماية منافذ خادم الهوتسبوت `64872-64875`: حظر 15 دقيقة لمن يتجاوز 60 اتصالاً جديداً في الدقيقة أو 40 اتصالاً مفتوحاً.
 
+## 👑 الهوية البصرية
+
+| الملف | الاستخدام |
+| :--- | :--- |
+| <img src="assets/logo.svg" width="260" alt="الشعار الكامل"> | [`assets/logo.svg`](assets/logo.svg) الشعار الكامل: تاج فوق موجات Wi-Fi، والاسم مرسوم كمسارات (لا يحتاج خطاً) |
+| <img src="assets/logo-mark.svg" width="72" alt="الرمز"> | [`assets/logo-mark.svg`](assets/logo-mark.svg) الرمز وحده: أيقونة، صورة حساب، ختم على الكرت |
+
+الألوان: ذهبي `#d6ab4a` (تدرج `#f7e7b0` إلى `#9a7128`) وأسود عميق `#0b0a08`. كل قالب يحمل الرمز نفسه بألوانه في `themes/<id>/assets/logo.svg`.
+
 ## 🎫 طباعة الكروت
 
 افتح [`vouchers/vouchers.html`](vouchers/vouchers.html) في المتصفح (يعمل بلا إنترنت؛ أبقِ `qrcode.min.js` بجواره):
@@ -95,4 +117,8 @@ sed -i 's#https://www.facebook.com/elbasha.net#https://www.instagram.com/YOUR_PA
 ---
 
 ## 📄 الترخيص (License)
-مرخص تحت رخصة **[MIT License](LICENSE)** للاستخدام المفتوح.
+مرخص تحت رخصة **[MIT License](LICENSE)** للاستخدام المفتوح. الخطوط تحت رخصة [SIL OFL 1.1](fonts/OFL.txt).
+
+---
+
+<p align="center">تم التطوير بواسطة <a href="https://zeidexlink.zeidexsoft.com/zeidex"><b>zeidexsoft</b></a></p>

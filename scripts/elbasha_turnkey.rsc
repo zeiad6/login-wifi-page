@@ -329,6 +329,13 @@ set [find where name="eb-expire-check"] policy=read,write,test source=":local no
                 dst-path=($ebHtmlDir . "/" . $f) check-certificate=yes
         } on-error={ :put ("ElBasha: could not download " . $f . " (check certificates / internet)") }
     }
+    # الخطوط العربية: يخدمها الراوتر نفسه، فتظهر قبل أن يملك المشترك إنترنت (نحو 170KB)
+    :foreach f in={"eb-kufi-400.woff2";"eb-kufi-600.woff2";"eb-kufi-800.woff2";"eb-naskh-400.woff2";"eb-naskh-700.woff2"} do={
+        :do {
+            /tool fetch url=($ebRepo . "/" . $ebRef . "/fonts/" . $f) \
+                dst-path=($ebHtmlDir . "/fonts/" . $f) check-certificate=yes
+        } on-error={ :put ("ElBasha: could not download font " . $f) }
+    }
 }
 
 

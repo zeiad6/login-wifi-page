@@ -9,9 +9,12 @@
 <meta http-equiv="refresh" content="4; url=https://www.facebook.com/elbasha.net">
 <title>تم الاتصال | الباشا نت</title>
 <style>
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-400.woff2) format("woff2");font-weight:300 500;font-display:swap}
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-600.woff2) format("woff2");font-weight:600 700;font-display:swap}
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-800.woff2) format("woff2");font-weight:800 900;font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-:root{--ease:cubic-bezier(.22,1,.36,1);--gap:24px;--pad:clamp(16px,4vw,32px);--h1:clamp(1.85rem,5vw,2.6rem);--h1-weight:800;--h1-track:-.015em;--field-h:62px;--field-bw:1.5px;--btn-h:58px}
+:root{--ease:cubic-bezier(.22,1,.36,1);--gap:24px;--pad:clamp(16px,4vw,32px);--h1:clamp(1.85rem,5vw,2.6rem);--h1-weight:800;--h1-track:0;--field-h:62px;--field-bw:1.5px;--btn-h:58px}
 body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;line-height:1.55;overflow-x:hidden;position:relative;text-rendering:optimizeLegibility}
 body.modal-open{overflow:hidden}
 [hidden]{display:none!important}
@@ -151,7 +154,7 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}}
 
 /* ── OLED Matrix ── */
-:root{--tk-bg:transparent;--tk-border:1px solid #12432a;--tk-ink:#9fdcb9;--tk-cta-bg:#0a1f13;--tk-cta-ink:#2bff88;--bg:#000;--ink:#d9ffe9;--muted:#6f9f85;--surface:#020604;--surface-solid:#030905;--surface-2:#06120b;--surface-3:#0a1f13;--line:#12432a;--accent:#2bff88;--accent-ink:#001409;--accent-2:#2bff88;--ok:#2bff88;--focus:#2bff88;--danger:#ff5555;--danger-bg:rgba(255,85,85,.08);--danger-ink:#ffbdbd;--danger-line:rgba(255,85,85,.4);--field-bg:#000;--field-line:#1d6b42;--focus-ring:0 0 0 1px #2bff88,0 0 24px rgba(43,255,136,.3);--chip-bg:#0a1f13;--chip-ink:#2bff88;--busy-bg:#06120b;--busy-ink:#6f9f85;--radius:6px;--radius-sm:3px;--font:system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-display:system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-num:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;--price:#2bff88;--scrim:rgba(0,0,0,.82);--sheet-border:1px solid #12432a;--sheet-shadow:0 0 60px rgba(43,255,136,.08)}
+:root{--tk-bg:transparent;--tk-border:1px solid #12432a;--tk-ink:#9fdcb9;--tk-cta-bg:#0a1f13;--tk-cta-ink:#2bff88;--bg:#000;--ink:#d9ffe9;--muted:#6f9f85;--surface:#020604;--surface-solid:#030905;--surface-2:#06120b;--surface-3:#0a1f13;--line:#12432a;--accent:#2bff88;--accent-ink:#001409;--accent-2:#2bff88;--ok:#2bff88;--focus:#2bff88;--danger:#ff5555;--danger-bg:rgba(255,85,85,.08);--danger-ink:#ffbdbd;--danger-line:rgba(255,85,85,.4);--field-bg:#000;--field-line:#1d6b42;--focus-ring:0 0 0 1px #2bff88,0 0 24px rgba(43,255,136,.3);--chip-bg:#0a1f13;--chip-ink:#2bff88;--busy-bg:#06120b;--busy-ink:#6f9f85;--radius:6px;--radius-sm:3px;--font:"EB Kufi",system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-display:"EB Kufi",system-ui,-apple-system,"Segoe UI","SF Arabic","Noto Sans Arabic",Tahoma,sans-serif;--font-num:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;--price:#2bff88;--scrim:rgba(0,0,0,.82);--sheet-border:1px solid #12432a;--sheet-shadow:0 0 60px rgba(43,255,136,.08)}
 .bg{background:radial-gradient(ellipse at center,transparent 45%,#000 92%),repeating-linear-gradient(0deg,rgba(43,255,136,.035) 0 1px,transparent 1px 3px)}
 .rain{position:absolute;inset:0;z-index:-1}
 .rain i{position:absolute;top:-80%;left:var(--x);font:normal 15px/1.2 ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;font-style:normal;color:#2bff88;opacity:var(--o);writing-mode:vertical-lr;text-orientation:upright;animation:rain var(--d) linear infinite;animation-delay:var(--s)}
@@ -170,13 +173,22 @@ h1::after{content:"";display:inline-block;width:.5em;height:.95em;background:var
 .plan-price{text-shadow:0 0 14px rgba(43,255,136,.45)}
 .stat{background:transparent;border:1px solid var(--line)}
 .stat dd{color:#2bff88}
+.brand-name{font-family:var(--font-display);font-weight:800;letter-spacing:0;text-transform:none;direction:rtl;margin-inline-end:0}
+/* Developer credit */
+.dev-credit{display:flex;justify-content:center;margin-top:14px}
+.dev-credit a{display:inline-flex;align-items:center;gap:.55em;padding:7px 15px 7px 12px;border-radius:999px;font-size:.78rem;line-height:1.4;color:var(--muted);text-decoration:none;border:1px solid var(--muted);border-color:color-mix(in srgb,var(--accent-2) 42%,transparent);background:color-mix(in srgb,var(--accent-2) 7%,transparent);transition:transform .3s var(--ease,ease),border-color .3s,background-color .3s}
+.dev-credit a:hover,.dev-credit a:focus-visible{transform:translateY(-2px);border-color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 14%,transparent)}
+.dev-credit svg{width:15px;height:15px;flex:none;color:var(--accent-2)}
+.dev-credit b{font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,monospace;font-weight:700;letter-spacing:.02em;color:var(--ink);background:linear-gradient(90deg,var(--ink) 30%,var(--accent-2) 50%,var(--ink) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:dev-shine 5s linear infinite}
+@keyframes dev-shine{from{background-position:100% 0}to{background-position:-150% 0}}
+@media (prefers-reduced-motion:reduce){.dev-credit b{animation:none}.dev-credit a{transition:none}}
 </style>
 </head>
 <body class="theme-oled-matrix is-solo">
 <div class="bg" aria-hidden="true"><div class="rain"><i style="--x:2.9%;--d:10.9s;--s:-7.5s;--o:0.17">٥٦١٢٥٦٠0٧٤٣٩٧٠٥٢٨١٦٥٢٠11١٥</i><i style="--x:5.7%;--d:13.1s;--s:-12.3s;--o:0.18">٨٣٢1٥٢٦٣١٩٤٤٠1٢0٥٢٧٤٩٧١٢٥١</i><i style="--x:13.3%;--d:16.4s;--s:-4.8s;--o:0.23">1٣٥٥٥0٥٥٣٢٨١٣٩0110٨٧٦٠٣٤٢٤</i><i style="--x:18.4%;--d:17.3s;--s:-15.2s;--o:0.10">٠٤٧٥١1٥0٧٥١٩0٣٠١٨٨٧0٢٩٢٠٠٠</i><i style="--x:23.2%;--d:12.6s;--s:-1.4s;--o:0.22">٥٠٣٥٠٤٢٣٩١١٠٧١٤١٥٤٠٩٥٨٤1٨٧</i><i style="--x:29.6%;--d:18.9s;--s:-11.4s;--o:0.21">٠٠٢٣٠٧٥٤٦0٦٥١0٧٥0٨٥10٤٥٨٩0</i><i style="--x:33.7%;--d:12.9s;--s:-3.3s;--o:0.19">٥٠1٦٧٤٩٩٦٥0٨٠٤٥1٧١٨٢٢٦٣٠1٦</i><i style="--x:40.4%;--d:11.2s;--s:-7.0s;--o:0.09">٢٨٣0٧٤٩٢٤٥0٦١١٥٣٤٦٣٠٠٨٥٦0١</i><i style="--x:45.8%;--d:10.6s;--s:-16.6s;--o:0.18">١٨0٠٦٣٤٢٨٥٢٧01٤1٩٤١٢١٨٧1٣٤</i><i style="--x:51.7%;--d:17.6s;--s:-7.9s;--o:0.09">٩٨٣٧١٨1٧٤٤٦٦١٤٩٨٦٦٧٤١١٤1٩1</i><i style="--x:57.4%;--d:9.0s;--s:-11.2s;--o:0.10">0٤٢٢٠٤٤1٩٧٦٠٥١٥٣٢٦٦٢٧٧٥١٠٥</i><i style="--x:61.6%;--d:11.5s;--s:-2.2s;--o:0.13">١٣٥٨10٢٠010٩٦0٠٣٧٠٧٤٣1٧١٨٨</i><i style="--x:69.5%;--d:11.6s;--s:-11.1s;--o:0.15">٠٣٥٦٦1١٤٠١١٣١٣١٤٣٩٥٦0٨٤٨٥٣</i><i style="--x:74.1%;--d:16.0s;--s:-13.8s;--o:0.09">٥0١٥٥٢٩٨٢٨١٥٩٠٤٣٠٥٨٣٠٥٥٦٠٩</i><i style="--x:80.3%;--d:11.5s;--s:-4.3s;--o:0.23">1٩1٢٣٤0٨0٤٤٩٢٩٦٧٤٧١٥٤١٦٢٠1</i><i style="--x:84.1%;--d:14.6s;--s:-12.7s;--o:0.19">٢٨٧٤0١١٠٨0٧٠٠٢٣1٠٠٢٦٧١٣٥١٥</i><i style="--x:90.5%;--d:12.1s;--s:-14.9s;--o:0.24">1٣0٧٨٠١٣٦٩٦٩10٢٢٨٣٩٤٤٢٣11٠</i><i style="--x:95.6%;--d:10.7s;--s:-5.0s;--o:0.16">٩٢٤٨٦٩٦٣٩٩0٨٨٧٠٩1١٥٥٤١٤٣٢١</i></div></div>
 <div class="page">
 <header class="topbar rise" style="--i:0">
-  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="12" fill="#000" stroke="#2bff88" stroke-width="2"/><path d="M17 41l-2-17 9.5 7.5L32 19l7.5 12.5L49 24l-2 17z" fill="none" stroke="#2bff88" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">El Basha</span></div>
+  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="12" fill="#000" stroke="#2bff88" stroke-width="2"/><g transform="translate(4 4) scale(.4375)" fill="#2bff88"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#2bff88" stroke-width="7.5" stroke-linecap="round"/></g></svg><span class="brand-name">الباشا نت</span></div>
   <span class="net"><span class="dot" aria-hidden="true"></span><span>شبكة الباشا نت</span><span class="net-ms" id="netMs" hidden></span></span>
 </header>
 <div class="stage"><main class="panel solo rise" style="--i:1"><div class="panel-in">
@@ -188,6 +200,7 @@ h1::after{content:"";display:inline-block;width:.5em;height:.95em;background:var
     <p class="hint"><a href="$(link-status)">عرض الوقت المتبقي والاستهلاك</a></p>
 </div></main></div>
 <footer class="foot rise" style="--i:2"><span>الباشا نت · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
+<div class="dev-credit rise" style="--i:5"><a href="https://zeidexlink.zeidexsoft.com/zeidex" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg><span>تم التطوير بواسطة</span><b dir="ltr">zeidexsoft</b></a></div>
 
 </div>
 

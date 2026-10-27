@@ -7,9 +7,12 @@
 <meta name="color-scheme" content="dark">
 <title>تسجيل الدخول | الباشا نت Spatial</title>
 <style>
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-400.woff2) format("woff2");font-weight:300 500;font-display:swap}
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-600.woff2) format("woff2");font-weight:600 700;font-display:swap}
+@font-face{font-family:"EB Kufi";src:url(fonts/eb-kufi-800.woff2) format("woff2");font-weight:800 900;font-display:swap}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-:root{--ease:cubic-bezier(.22,1,.36,1);--gap:24px;--pad:clamp(16px,4vw,32px);--h1:clamp(1.85rem,5vw,2.6rem);--h1-weight:800;--h1-track:-.015em;--field-h:62px;--field-bw:1.5px;--btn-h:58px}
+:root{--ease:cubic-bezier(.22,1,.36,1);--gap:24px;--pad:clamp(16px,4vw,32px);--h1:clamp(1.85rem,5vw,2.6rem);--h1-weight:800;--h1-track:0;--field-h:62px;--field-bw:1.5px;--btn-h:58px}
 body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;line-height:1.55;overflow-x:hidden;position:relative;text-rendering:optimizeLegibility}
 body.modal-open{overflow:hidden}
 [hidden]{display:none!important}
@@ -149,7 +152,7 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}}
 
 /* ── Spatial Glass ── */
-:root{--tk-bg:rgba(255,255,255,.12);--tk-border:1px solid rgba(255,255,255,.22);--tk-radius:999px;--tk-cta-radius:999px;--tk-shadow:inset 0 1px 0 rgba(255,255,255,.35);--bg:#0a1626;--ink:#fff;--muted:rgba(232,242,255,.76);--surface:rgba(255,255,255,.13);--surface-solid:rgba(30,44,64,.95);--surface-2:rgba(255,255,255,.1);--surface-3:rgba(255,255,255,.18);--line:rgba(255,255,255,.24);--accent:#0068d6;--accent-ink:#fff;--accent-2:#64d2ff;--accent-line:#64d2ff;--ok:#30d158;--focus:#64d2ff;--danger:#ff453a;--danger-bg:rgba(255,69,58,.2);--danger-ink:#ffdcd9;--danger-line:rgba(255,69,58,.45);--field-bg:rgba(0,0,0,.2);--field-line:rgba(255,255,255,.22);--focus-ring:0 0 0 4px rgba(10,132,255,.4);--chip-bg:rgba(255,255,255,.18);--chip-ink:#fff;--busy-bg:rgba(255,255,255,.2);--busy-ink:#e6eefc;--radius:38px;--radius-sm:20px;--radius-xs:14px;--btn-radius:999px;--font:-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--font-display:-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--font-num:-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--h1-weight:700;--h1-track:-.02em;--price:#fff;--scrim:rgba(5,12,24,.45);--panel-border:1px solid rgba(255,255,255,.22);--panel-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),0 50px 100px -30px rgba(0,8,24,.6);--sheet-border:1px solid rgba(255,255,255,.2)}
+:root{--tk-bg:rgba(255,255,255,.12);--tk-border:1px solid rgba(255,255,255,.22);--tk-radius:999px;--tk-cta-radius:999px;--tk-shadow:inset 0 1px 0 rgba(255,255,255,.35);--bg:#0a1626;--ink:#fff;--muted:rgba(232,242,255,.76);--surface:rgba(255,255,255,.13);--surface-solid:rgba(30,44,64,.95);--surface-2:rgba(255,255,255,.1);--surface-3:rgba(255,255,255,.18);--line:rgba(255,255,255,.24);--accent:#0068d6;--accent-ink:#fff;--accent-2:#64d2ff;--accent-line:#64d2ff;--ok:#30d158;--focus:#64d2ff;--danger:#ff453a;--danger-bg:rgba(255,69,58,.2);--danger-ink:#ffdcd9;--danger-line:rgba(255,69,58,.45);--field-bg:rgba(0,0,0,.2);--field-line:rgba(255,255,255,.22);--focus-ring:0 0 0 4px rgba(10,132,255,.4);--chip-bg:rgba(255,255,255,.18);--chip-ink:#fff;--busy-bg:rgba(255,255,255,.2);--busy-ink:#e6eefc;--radius:38px;--radius-sm:20px;--radius-xs:14px;--btn-radius:999px;--font:"EB Kufi",-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--font-display:"EB Kufi",-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--font-num:-apple-system,"SF Pro Text","SF Arabic",system-ui,"Segoe UI","Noto Sans Arabic",sans-serif;--h1-weight:700;--h1-track:0;--price:#fff;--scrim:rgba(5,12,24,.45);--panel-border:1px solid rgba(255,255,255,.22);--panel-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),0 50px 100px -30px rgba(0,8,24,.6);--sheet-border:1px solid rgba(255,255,255,.2)}
 .bg{background:radial-gradient(70% 55% at 12% 8%,#1f7a8c,transparent 60%),radial-gradient(60% 50% at 92% 92%,#c46a2d,transparent 60%),radial-gradient(80% 70% at 72% 18%,#2c3e8f,transparent 65%),linear-gradient(160deg,#0b1d33,#071019)}
 .orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.5),rgba(255,255,255,.07) 45%,transparent 70%);animation:float 14s ease-in-out infinite alternate}
 .o1{width:28vmin;height:28vmin;top:7%;left:6%}
@@ -166,13 +169,22 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
 .action:hover{background:rgba(255,255,255,.18);transform:scale(1.05)}
 .action svg{color:#fff}
 .plan{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08)}
+.brand-name{font-family:var(--font-display);font-weight:800;letter-spacing:0;text-transform:none;direction:rtl;margin-inline-end:0}
+/* Developer credit */
+.dev-credit{display:flex;justify-content:center;margin-top:14px}
+.dev-credit a{display:inline-flex;align-items:center;gap:.55em;padding:7px 15px 7px 12px;border-radius:999px;font-size:.78rem;line-height:1.4;color:var(--muted);text-decoration:none;border:1px solid var(--muted);border-color:color-mix(in srgb,var(--accent-2) 42%,transparent);background:color-mix(in srgb,var(--accent-2) 7%,transparent);transition:transform .3s var(--ease,ease),border-color .3s,background-color .3s}
+.dev-credit a:hover,.dev-credit a:focus-visible{transform:translateY(-2px);border-color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 14%,transparent)}
+.dev-credit svg{width:15px;height:15px;flex:none;color:var(--accent-2)}
+.dev-credit b{font-family:ui-monospace,"Cascadia Mono","SF Mono",Menlo,Consolas,monospace;font-weight:700;letter-spacing:.02em;color:var(--ink);background:linear-gradient(90deg,var(--ink) 30%,var(--accent-2) 50%,var(--ink) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:dev-shine 5s linear infinite}
+@keyframes dev-shine{from{background-position:100% 0}to{background-position:-150% 0}}
+@media (prefers-reduced-motion:reduce){.dev-credit b{animation:none}.dev-credit a{transition:none}}
 </style>
 </head>
 <body class="theme-spatial-glass">
 <div class="bg" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
 <div class="page">
 <header class="topbar rise" style="--i:0">
-  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/><path d="M17 41l-2-17 9.5 7.5L32 19l7.5 12.5L49 24l-2 17z" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-name">El Basha</span></div>
+  <div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/><g transform="translate(4 4) scale(.4375)" fill="#fff"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#fff" stroke-width="7.5" stroke-linecap="round"/></g></svg><span class="brand-name">الباشا نت</span></div>
   <span class="net"><span class="dot" aria-hidden="true"></span><span>شبكة الباشا نت</span><span class="net-ms" id="netMs" hidden></span></span>
 </header>
 <div class="ticker rise" style="--i:1">
@@ -215,6 +227,7 @@ h1{font-family:var(--font-display);font-size:var(--h1);line-height:1.15;font-wei
   </aside>
 </div>
 <footer class="foot rise" style="--i:4"><span>الباشا نت · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
+<div class="dev-credit rise" style="--i:5"><a href="https://zeidexlink.zeidexsoft.com/zeidex" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg><span>تم التطوير بواسطة</span><b dir="ltr">zeidexsoft</b></a></div>
 
 </div>
 <script>
