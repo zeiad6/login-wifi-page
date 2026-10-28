@@ -52,6 +52,11 @@
 # true = الراوتر لا يتعامل إلا مع من أخذ عنوانه من DHCP (يمنع تزوير الآيبي يدوياً)
 # تحذير: أي جهاز بآيبي يدوي على الجسر (حتى جهازك) سيفقد الاتصال. ادخل عبر Winbox بالـ MAC عند الحاجة.
 :global ebArpReplyOnly true
+# DHCP Snooping على الجسر: يحظر برمجياً أي راوتر منزلي دخيل يوزّع DHCP فور ربطه.
+# منفذ DHCP الموثوق (نحو سيرفرك/بوابتك الداخلية إن وُجد خادم DHCP خلفه). اتركه ""
+# فيصبح كل منافذ المشتركين غير موثوقة (الوضع الصحيح حين يكون الراوتر نفسه خادم DHCP).
+:global ebDhcpSnooping true
+:global ebDhcpTrustedPort ""
 
 # ---- الأجهزة الثابتة (أكسس بوينت، سيرفرات) ----
 # كل سطر: {"MAC";"IP";"الوصف"} — تُحجز لها آيبيهات ثابتة وتُعفى من صفحة الدخول (Bypassed)
@@ -67,6 +72,9 @@
 # ---- الهوتسبوت ----
 :global ebHsName "eb-hotspot"
 :global ebHsProfile "ElBasha_Profile"
+# عمر كوكي الدخول: كلما قصُر قلّ خطر تثبيت الجلسة (دخول تلقائي لماك قديم بكوكي قديم).
+# قيمة متوسطة تريح العميل خلال اليوم وتبطل الكوكي بعدها.
+:global ebCookieLifetime "8h"
 # مجلد صفحات الدخول. الأجهزة التي لا تملك مجلد flash تستخدم "hotspot"
 :global ebHtmlDir "flash/hotspot"
 # تنزيل صفحات القالب من GitHub (true/false)
@@ -244,6 +252,20 @@
     set [find where interface=$ebBridge] alert-timeout=1h disabled=no on-alert=$alertMsg
 }
 
+# ---- حظر DHCP الدخيل برمجياً (DHCP Snooping) ----
+# الجسر يُسقط ردود DHCP القادمة من أي منفذ غير موثوق، فيُحظر فوراً أي راوتر منزلي
+# مقلوب (WAN↔LAN) يوزّع DHCP على الشبكة. خادم الراوتر نفسه (من الـ CPU) موثوق دائماً.
+:if ($ebDhcpSnooping) do={
+    /interface bridge set [find where name=$ebBridge] dhcp-snooping=yes
+    # كل منافذ المشتركين غير موثوقة
+    /interface bridge port set [find where bridge=$ebBridge] trusted=no
+    # المنفذ الموثوق الوحيد (إن حُدّد): نحو خادم DHCP داخلي شرعي خلف الجسر
+    :if ([:len $ebDhcpTrustedPort] > 0) do={
+        :local tp [/interface bridge port find where bridge=$ebBridge interface=$ebDhcpTrustedPort]
+        :if ([:len $tp] > 0) do={ /interface bridge port set $tp trusted=yes }
+    }
+}
+
 
 # ==============================================================================
 #  البلوك 4ب: DNS حماية العائلة (Family Shield)
@@ -265,7 +287,7 @@
 /ip hotspot profile
 :if ([:len [find where name=$ebHsProfile]] = 0) do={ add name=$ebHsProfile }
 set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
-    html-directory=$ebHtmlDir login-by=$ebLoginBy http-cookie-lifetime=1d
+    html-directory=$ebHtmlDir login-by=$ebLoginBy http-cookie-lifetime=$ebCookieLifetime
 
 # خادم هوتسبوت واحد على الجسر: إن وُجد يُربط بالبروفايل الجديد فقط
 /ip hotspot
@@ -280,8 +302,10 @@ set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
 #  البلوك 6ب: بروفايلات الباقات (Shared Users = 1)
 # ==============================================================================
 
-# rate-limit يحدد سقف سرعة كل كرت، وshared-users=1 يمنع تشغيل الكرت على جهازين معاً.
-# لا on-login/on-logout ولا كتابة على التعليقات: الصلاحية تأتي من limit-uptime على الكرت
+# rate-limit يحدد سقف سرعة كل كرت. shared-users=1 يمنع تشغيل الكرت على جهازين معاً
+# (ضد تثبيت الجلسة). keepalive-timeout=1m يحرّر الجلسة المهجورة بسرعة، فيستطيع جهاز
+# جديد استخدام الكرت نفسه خلال دقيقة من فصل الجهاز القديم.
+# لا on-login/on-logout ولا كتابة على التعليقات: الصلاحية من limit-uptime على الكرت
 # نفسه (يفرضها RouterOS داخلياً)، فلا استهلاك للفلاش أثناء كل دخول وخروج.
 # البروفايلات الموجودة مسبقاً (وكروتها) لا تُمس؛ هذه بروفايلات جديدة تبدأ بـ eb-
 /ip hotspot user profile
@@ -289,7 +313,7 @@ set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
     :local n ($pk->0)
     :local rl ($pk->1)
     :if ([:len [find where name=$n]] = 0) do={ add name=$n }
-    set [find where name=$n] shared-users=1 rate-limit=$rl keepalive-timeout=2m status-autorefresh=5m
+    set [find where name=$n] shared-users=1 rate-limit=$rl keepalive-timeout=1m status-autorefresh=5m
 }
 
 
@@ -679,8 +703,15 @@ set [find where name="eb-cleanup"] policy=read,write,test source="# Gentle daily
     \n  :if (\$dead) do={\r\
     \n    :local u [/ip hotspot user get \$id name]\r\
     \n    /ip hotspot active remove [find where user=\$u]\r\
+    \n    /ip hotspot cookie remove [find where user=\$u]\r\
     \n    /ip hotspot user remove \$id\r\
     \n    :set n (\$n + 1)\r\
+    \n  }\r\
+    \n}\r\
+    \n# تنظيف الكوكيز اليتيمة (لمستخدمين لم يعودوا موجودين) حتى لا يبقى ماك قديم يسجّل تلقائياً\r\
+    \n:foreach ck in=[/ip hotspot cookie find] do={\r\
+    \n  :if ([:len [/ip hotspot user find where name=[/ip hotspot cookie get \$ck user]]] = 0) do={\r\
+    \n    /ip hotspot cookie remove \$ck\r\
     \n  }\r\
     \n}\r\
     \n:log info (\"ElBasha: cleanup removed \" . \$n . \" used-up vouchers\")"
