@@ -45,7 +45,13 @@ jobs:
           git add previews
           if git diff --cached --quiet; then
             echo "Previews unchanged"
-          else
-            git commit -m "Regenerate theme previews"
-            git push
+            exit 0
           fi
+          git commit -m "Regenerate theme previews"
+          # main may have moved while this job ran; rebase and retry the push.
+          for i in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            git pull --rebase --autostash origin main
+          done
+          echo "::error::push failed after retries"
+          exit 1
