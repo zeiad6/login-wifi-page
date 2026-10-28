@@ -100,15 +100,6 @@
 - عند التوليد تظهر أوامر `/ip hotspot user add` جاهزة للصق في Terminal، كل كرت ببروفايل فئته.
 - عند الطباعة: مقياس 100% وتفعيل "رسوم الخلفية / Background graphics".
 
-## 🔗 صفحة الترحيب
-
-بعد الدخول تنقل صفحة `alogin.html` المشترك إلى صفحة الشبكة بعد 4 ثوانٍ. غيّر الرابط في كل القوالب بأمر واحد:
-```bash
-sed -i 's#https://www.facebook.com/elbasha.net#https://www.instagram.com/YOUR_PAGE#' themes/*/alogin.html alogin.html
-```
-
----
-
 ## English
 
 **El Basha Net (الباشا نت)** is a set of 8 MikroTik hotspot themes. Each `themes/<id>/` folder holds `login.html`, `status.html`, `alogin.html`, `logout.html` and `assets/logo.svg`. Pages are self-contained (inline CSS/JS, no external fonts or CDNs), so they load before the client has internet access.
