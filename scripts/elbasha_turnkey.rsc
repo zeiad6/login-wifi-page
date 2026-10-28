@@ -78,9 +78,37 @@
 :global ebRef "main"
 
 # ---- الباقات ----
-# كل سطر: {"اسم البروفايل";"سرعة رفع/تحميل";"الصلاحية من أول دخول"}
-# السرعة بصيغة رفع/تحميل، مثل "512k/2M". الصلاحية: 3h أو 1d أو 7d أو 30d
-:global ebPackages {{"eb-1M";"1M/1M";"1d"};{"eb-2M";"1M/2M";"3d"};{"eb-4M";"2M/4M";"7d"}}
+# كل سطر: {"اسم البروفايل";"سرعة رفع/تحميل"}. السرعة بصيغة رفع/تحميل، مثل "512k/2M".
+# الصلاحية لم تعد تُحسب بتعديل تعليق الكرت (يتلف الفلاش)؛ صارت limit-uptime على الكرت نفسه:
+# يفرضها RouterOS داخلياً بلا أي كتابة على الفلاش أثناء التشغيل. اضبطها عند توليد الكروت
+# في vouchers.html (خانة "مدة الاستخدام")، أو يدوياً: limit-uptime=1d
+:global ebPackages {{"eb-1M";"1M/1M"};{"eb-2M";"1M/2M"};{"eb-4M";"2M/4M"}}
+# السماح بـ PAP كخيار احتياطي. القالب يستعمل CHAP تلقائياً متى أرسل الراوتر chap-id،
+# ويرجع إلى PAP فقط إن غاب. تحذير: PAP يرسل رقم الكرت نصاً مكشوفاً على بوابة HTTP.
+# اتركه true لتجنب فشل الدخول على أجهزة/متصفحات لا تكمل CHAP؛ اجعله false لأقصى تشفير.
+:global ebAllowPap true
+
+# ---- حدود حماية صفحة الدخول (Anti-Brute Force) ----
+# الهواتف الحديثة تفتح عشرات الاتصالات فور الاتصال (خلفيات، خطوط، تحديثات). حدود واسعة
+# تتجنب حظر المشتركين الشرعيين. الحماية الحقيقية من التخمين: كروت 10 أرقام أو أكثر.
+:global ebMaxOpenConn 150
+:global ebNewPerMin 150
+:global ebNewBurst 300
+
+# ---- منع مشاركة النت (Anti-Tethering) ----
+# true = TTL=1 على الحزم النازلة للمشترك، فلا تعمل نقطة الاتصال من هاتفه. لا يؤثر على
+# تصفح الهاتف نفسه. مكالمات الواي فاي وفحوص النظام (IPsec/IKE/ICMP) مستثناة.
+:global ebAntiTether true
+
+# ---- DNS المشفر ----
+# true = رفض DoT (853) وDoH (على خوادمها المعروفة) بـ tcp-reset سريع، فيرجع المتصفح/النظام
+# فوراً إلى DNS الشبكة بلا تعليق أو خطأ مرعب. false = السماح به.
+:global ebBlockDoH true
+
+# ---- إدارة الراوتر من الإنترنت ----
+# عنوان (أو شبكة) يُسمح له بالوصول لـ Winbox/SSH من جهة WAN للصيانة عن بُعد. اتركه ""
+# لإغلاق كل إدارة من الإنترنت (الإدارة من الشبكة الداخلية فقط). مثال: "41.x.x.x"
+:global ebAdminAllow ""
 
 # ---- سرعة الخط الكلية (لنظام الأولويات) ----
 # ضع نحو 90% من السرعة الحقيقية للخط، وإلا لن تعمل الأولويات لأن الطابور لن يمتلئ أبداً
@@ -112,7 +140,7 @@
 
 
 # ==============================================================================
-#  فحص الإصدار: السكربت يعتمد على أوامر RouterOS v7 (مثل :timestamp)
+#  فحص الإصدار: السكربت يعتمد على صيغة قوائم RouterOS v7
 # ==============================================================================
 :if ([:pick [/system resource get version] 0 1] != "7") do={
     :error "ElBasha: this script needs RouterOS v7"
@@ -205,6 +233,17 @@
     /interface bridge set [find where name=$ebBridge] arp=reply-only
 }
 
+# ---- كشف خوادم DHCP الدخيلة (Rogue DHCP Detection) ----
+# ينبّه في السجل عند ظهور خادم DHCP آخر على الجسر (يسبب تعارض آيبيهات وسرقة جلسات).
+# خادم الراوتر نفسه ليس دخيلاً. راقب /log أو /ip dhcp-server alert عند التنبيه.
+/ip dhcp-server alert
+:local alertMsg ":log warning \"ElBasha: ROGUE DHCP server detected on the hotspot bridge - check /ip dhcp-server alert\""
+:if ([:len [find where interface=$ebBridge]] = 0) do={
+    add interface=$ebBridge alert-timeout=1h disabled=no comment="ElBasha: rogue DHCP detection" on-alert=$alertMsg
+} else={
+    set [find where interface=$ebBridge] alert-timeout=1h disabled=no on-alert=$alertMsg
+}
+
 
 # ==============================================================================
 #  البلوك 4ب: DNS حماية العائلة (Family Shield)
@@ -219,11 +258,14 @@
 #  البلوك 5أ: الهوتسبوت — البروفايل الرئيسي والخادم
 # ==============================================================================
 
-# login-by=http-chap,cookie فقط: الكرت لا يُرسل أبداً نصاً مكشوفاً (http-pap مغلق)
+# login-by: CHAP أولاً (مشفّر)، وcookie لتذكّر الجهاز. PAP يُضاف فقط إن فعّلت ebAllowPap،
+# ليكمل الدخول حين لا يرسل الراوتر chap-id فيرجع القالب تلقائياً إلى PAP.
+:global ebLoginBy "http-chap,cookie"
+:if ($ebAllowPap) do={ :set ebLoginBy "http-chap,http-pap,cookie" }
 /ip hotspot profile
 :if ([:len [find where name=$ebHsProfile]] = 0) do={ add name=$ebHsProfile }
 set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
-    html-directory=$ebHtmlDir login-by=http-chap,cookie http-cookie-lifetime=1d
+    html-directory=$ebHtmlDir login-by=$ebLoginBy http-cookie-lifetime=1d
 
 # خادم هوتسبوت واحد على الجسر: إن وُجد يُربط بالبروفايل الجديد فقط
 /ip hotspot
@@ -235,71 +277,19 @@ set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
 
 
 # ==============================================================================
-#  البلوك 6أ: سكربتات صلاحية الكروت (On-Login / On-Logout)
-# ==============================================================================
-
-# eb-on-login: عند أول دخول فعلي يكتب تاريخ الانتهاء في تعليق الكرت بالثانية:
-#   exp:<ثواني>; first-login <التاريخ والوقت>; valid <المدة>; <التعليق القديم>
-# التعليق القديم لا يُحذف. وعند أي دخول لاحق بعد الانتهاء يُعطَّل الكرت ويُفصل.
-/system script
-:if ([:len [find where name="eb-on-login"]] = 0) do={ add name="eb-on-login" }
-set [find where name="eb-on-login"] policy=read,write,test dont-require-permissions=no source="# \$u = voucher name, \$v = validity (e.g. 1d), \$m = \"out\" when called from on-logout\r\
-    \n:local id [/ip hotspot user find where name=\$u]\r\
-    \n:if ([:len \$id] = 0) do={ :return \"\" }\r\
-    \n:set id (\$id->0)\r\
-    \n:local c [/ip hotspot user get \$id comment]\r\
-    \n:local now [:tonum [:timestamp]]\r\
-    \n:local p [:find \$c \"exp:\"]\r\
-    \n:if ([:typeof \$p] != \"num\") do={\r\
-    \n  :if (\$m = \"out\") do={ :return \"\" }\r\
-    \n  :local e (\$now + [:tonum [:totime \$v]])\r\
-    \n  /ip hotspot user set \$id comment=(\"exp:\" . \$e . \"; first-login \" . [/system clock get date] . \" \" . [/system clock get time] . \"; valid \" . \$v . \"; \" . \$c)\r\
-    \n  :log info (\"ElBasha: voucher \" . \$u . \" activated for \" . \$v)\r\
-    \n} else={\r\
-    \n  :local e [:tonum [:pick \$c (\$p + 4) [:find \$c \";\" \$p]]]\r\
-    \n  :if (\$now >= \$e) do={\r\
-    \n    /ip hotspot user disable \$id\r\
-    \n    /ip hotspot active remove [find where user=\$u]\r\
-    \n    :log info (\"ElBasha: voucher \" . \$u . \" expired\")\r\
-    \n  }\r\
-    \n}"
-
-# eb-expire-check: كل 5 دقائق يفصل الجلسات النشطة التي انتهت صلاحيتها (يمر على المتصلين فقط، فهو خفيف)
-:if ([:len [find where name="eb-expire-check"]] = 0) do={ add name="eb-expire-check" }
-set [find where name="eb-expire-check"] policy=read,write,test source=":local now [:tonum [:timestamp]]\r\
-    \n:foreach a in=[/ip hotspot active find] do={\r\
-    \n  :local u [/ip hotspot active get \$a user]\r\
-    \n  :local id [/ip hotspot user find where name=\$u]\r\
-    \n  :if ([:len \$id] > 0) do={\r\
-    \n    :local c [/ip hotspot user get (\$id->0) comment]\r\
-    \n    :local p [:find \$c \"exp:\"]\r\
-    \n    :if ([:typeof \$p] = \"num\") do={\r\
-    \n      :if (\$now >= [:tonum [:pick \$c (\$p + 4) [:find \$c \";\" \$p]]]) do={\r\
-    \n        /ip hotspot user disable (\$id->0)\r\
-    \n        /ip hotspot active remove \$a\r\
-    \n        :log info (\"ElBasha: voucher \" . \$u . \" expired, session closed\")\r\
-    \n      }\r\
-    \n    }\r\
-    \n  }\r\
-    \n}"
-
-
-# ==============================================================================
 #  البلوك 6ب: بروفايلات الباقات (Shared Users = 1)
 # ==============================================================================
 
 # rate-limit يحدد سقف سرعة كل كرت، وshared-users=1 يمنع تشغيل الكرت على جهازين معاً.
+# لا on-login/on-logout ولا كتابة على التعليقات: الصلاحية تأتي من limit-uptime على الكرت
+# نفسه (يفرضها RouterOS داخلياً)، فلا استهلاك للفلاش أثناء كل دخول وخروج.
 # البروفايلات الموجودة مسبقاً (وكروتها) لا تُمس؛ هذه بروفايلات جديدة تبدأ بـ eb-
 /ip hotspot user profile
 :foreach pk in=$ebPackages do={
     :local n ($pk->0)
     :local rl ($pk->1)
-    :local v ($pk->2)
-    :local onIn (":local f [:parse [/system script get eb-on-login source]]; \$f u=\$user v=" . $v)
-    :local onOut (":local f [:parse [/system script get eb-on-login source]]; \$f u=\$user v=" . $v . " m=out")
     :if ([:len [find where name=$n]] = 0) do={ add name=$n }
-    set [find where name=$n] shared-users=1 rate-limit=$rl keepalive-timeout=2m \
-        status-autorefresh=1m on-login=$onIn on-logout=$onOut
+    set [find where name=$n] shared-users=1 rate-limit=$rl keepalive-timeout=2m status-autorefresh=5m
 }
 
 
@@ -403,20 +393,37 @@ set [find where name="eb-expire-check"] policy=read,write,test source=":local no
 
 # ---- حماية صفحة الدخول من التخمين والإغراق ----
 # الهوتسبوت يحوّل كل طلبات :80/:443 إلى خادمه على المنافذ 64872-64875.
-# الحدود واسعة عمداً لأن الهواتف ترسل فحوص اتصال متكررة. الحماية الحقيقية: كروت بـ 10 أرقام أو أكثر.
+# الحدود واسعة (ebMaxOpenConn/ebNewPerMin) لأن الهواتف تفتح عشرات الاتصالات المتزامنة فور
+# الاتصال. الحماية الحقيقية من التخمين: كروت بـ 10 أرقام أو أكثر.
 add chain=input protocol=tcp dst-port=64872-64875 src-address-list=eb-blacklist \
     action=drop comment="ElBasha: drop banned clients"
 add chain=input protocol=tcp dst-port=64872-64875 connection-state=new \
-    connection-limit=40,32 action=add-src-to-address-list \
+    connection-limit=($ebMaxOpenConn . ",32") action=add-src-to-address-list \
     address-list=eb-blacklist address-list-timeout=15m \
-    comment="ElBasha: more than 40 open connections from one IP -> ban 15m"
+    comment=("ElBasha: more than " . $ebMaxOpenConn . " open connections from one IP -> ban 15m")
 add chain=input protocol=tcp dst-port=64872-64875 connection-state=new \
     action=jump jump-target=eb-rate comment="ElBasha: check new connection rate"
-add chain=eb-rate dst-limit=60,120,src-address/1m action=return \
-    comment="ElBasha: allow up to 60 new connections/min per IP (burst 120)"
+add chain=eb-rate dst-limit=($ebNewPerMin . "," . $ebNewBurst . ",src-address/1m") action=return \
+    comment=("ElBasha: allow up to " . $ebNewPerMin . " new connections/min per IP (burst " . $ebNewBurst . ")")
 add chain=eb-rate action=add-src-to-address-list address-list=eb-blacklist \
     address-list-timeout=15m comment="ElBasha: over the rate -> ban 15m"
 add chain=eb-rate action=drop comment="ElBasha: drop the excess connection"
+
+# ---- حماية الراوتر نفسه من الإنترنت (البلوك 8) ----
+# يُسقط الحزم التالفة، ويمنع الوصول من WAN إلى بوابة الدخول وإلى إدارة الراوتر
+# (Winbox/SSH/Telnet/FTP/API/الويب). القواعد مقيّدة بـ in-interface=WAN فقط،
+# فإدارة الراوتر من الشبكة الداخلية تبقى تعمل ولا يُحبس المشرف.
+add chain=input connection-state=invalid action=drop comment="ElBasha: drop invalid"
+add chain=input in-interface=$ebWan protocol=icmp limit=10/1s,5:packet \
+    action=accept comment="ElBasha: limited ICMP from WAN"
+# السماح بالإدارة عن بُعد من عنوان واحد فقط إن حُدّد
+:if ([:len $ebAdminAllow] > 0) do={
+    add chain=input in-interface=$ebWan src-address=$ebAdminAllow protocol=tcp dst-port=8291,22 \
+        action=accept comment="ElBasha: remote admin from trusted address"
+}
+# بوابة الدخول وخدمات الإدارة ممنوعة من الإنترنت
+add chain=input in-interface=$ebWan protocol=tcp dst-port=64872-64875 action=drop comment="ElBasha: no hotspot portal from WAN"
+add chain=input in-interface=$ebWan protocol=tcp dst-port=8291,22,23,21,8728,80,443 action=drop comment="ElBasha: no management from WAN"
 
 # ---- DNS الراوتر لا يُفتح للإنترنت (حتى لا يُستغل في هجمات DNS Amplification) ----
 add chain=input in-interface=$ebWan protocol=udp dst-port=53 action=drop comment="ElBasha: no public DNS (udp)"
@@ -433,11 +440,19 @@ add chain=input in-interface=$ebWan protocol=tcp dst-port=53 action=drop comment
 add chain=forward src-address=($ebNet . "/" . $ebPrefix) dst-address=($ebNet . "/" . $ebPrefix) \
     src-address-list=!eb-trusted dst-address-list=!eb-trusted action=drop comment="ElBasha: client isolation"
 
-# ---- منع تجاوز DNS العائلة ----
-add chain=forward src-address=($ebNet . "/" . $ebPrefix) protocol=tcp dst-port=853 action=drop comment="ElBasha: block DNS-over-TLS"
-add chain=forward src-address=($ebNet . "/" . $ebPrefix) protocol=udp dst-port=853 action=drop comment="ElBasha: block DNS-over-QUIC"
-add chain=forward src-address=($ebNet . "/" . $ebPrefix) dst-address-list=eb-doh protocol=tcp dst-port=443 action=drop comment="ElBasha: block DoH (tcp)"
-add chain=forward src-address=($ebNet . "/" . $ebPrefix) dst-address-list=eb-doh protocol=udp dst-port=443 action=drop comment="ElBasha: block DoH (udp)"
+# ---- منع تجاوز DNS العائلة (برفض سريع لا حظر صامت) ----
+# reject بـ tcp-reset/icmp بدل drop: يفشل اتصال DNS المشفّر فوراً فيرجع المتصفح والنظام
+# تلقائياً إلى DNS الشبكة (المُعاد توجيهه في NAT إلى AdGuard)، بلا تعليق طويل ولا خطأ مرعب.
+:if ($ebBlockDoH) do={
+    add chain=forward src-address=($ebNet . "/" . $ebPrefix) protocol=tcp dst-port=853 \
+        action=reject reject-with=tcp-reset comment="ElBasha: reject DNS-over-TLS (fast fallback)"
+    add chain=forward src-address=($ebNet . "/" . $ebPrefix) protocol=udp dst-port=853 \
+        action=reject reject-with=icmp-port-unreachable comment="ElBasha: reject DNS-over-QUIC (fast fallback)"
+    add chain=forward src-address=($ebNet . "/" . $ebPrefix) dst-address-list=eb-doh protocol=tcp dst-port=443 \
+        action=reject reject-with=tcp-reset comment="ElBasha: reject DoH tcp (fast fallback)"
+    add chain=forward src-address=($ebNet . "/" . $ebPrefix) dst-address-list=eb-doh protocol=udp dst-port=443 \
+        action=reject reject-with=icmp-port-unreachable comment="ElBasha: reject DoH quic (fast fallback)"
+}
 
 # ---- FastTrack للبيانات الموثوقة فقط ----
 # FastTrack يتخطى Mangle والطوابير، فلو طُبق على المشتركين لتعطلت السرعات والأولويات.
@@ -537,8 +552,19 @@ add chain=prerouting in-interface=$lan connection-mark=eb-prio protocol=udp \
 # --- منع مشاركة النت (Anti-Tethering) ---
 # كل حزمة تصل للمشترك بـ TTL=1. الهاتف ينقصها 1 عند تمريرها لجهاز آخر فتصبح 0 وتُرمى،
 # فنقطة الاتصال من الهاتف لا تعمل، بينما الهاتف نفسه يتصفح طبيعياً.
-add chain=postrouting out-interface=$lan dst-address-list=!eb-trusted action=change-ttl \
-    new-ttl=set:1 passthrough=yes comment="ElBasha: TTL=1 anti-tethering"
+# استثناءات: مكالمات الواي فاي (IPsec ESP وIKE على 500/4500) وفحوص ICMP الأمنية
+# لا تُمسّ، حتى لا تنكسر خدمات أندرويد/iOS الأساسية. action=accept في mangle يوقف
+# بقية سلسلة postrouting لهذه الحزمة فلا تصلها قاعدة TTL.
+:if ($ebAntiTether) do={
+    add chain=postrouting out-interface=$lan protocol=ipsec-esp action=accept \
+        comment="ElBasha: keep TTL for IPsec (Wi-Fi calling)"
+    add chain=postrouting out-interface=$lan protocol=udp dst-port=500,4500 action=accept \
+        comment="ElBasha: keep TTL for IKE (Wi-Fi calling)"
+    add chain=postrouting out-interface=$lan protocol=icmp action=accept \
+        comment="ElBasha: keep TTL for ICMP checks"
+    add chain=postrouting out-interface=$lan dst-address-list=!eb-trusted action=change-ttl \
+        new-ttl=set:1 passthrough=yes comment="ElBasha: TTL=1 anti-tethering"
+}
 
 
 # ==============================================================================
@@ -626,19 +652,16 @@ set [find where name="eb-backup"] policy=read,write,test,sensitive source="# Day
     \n/ip hotspot user print detail without-paging file=(\$dir . \"eb-usage-\" . \$day)\r\
     \n:log info (\"ElBasha: vouchers backed up to \" . \$dir . \"eb-users-\" . \$day . \".rsc\")"
 
-# eb-cleanup: يومياً يحذف الكروت المنتهية فقط: انتهت صلاحيتها (exp)، أو استنفدت limit-uptime
-# أو limit-bytes-total. الكروت بلا حدود ولا تاريخ انتهاء لا تُمس أبداً.
-# يعمل بعد النسخ الاحتياطي، فكل كرت محذوف موجود في نسخة اليوم.
+# eb-cleanup: دفعة يومية لطيفة تحذف الكروت المستنفَدة فقط: استنفدت limit-uptime (مدة
+# الاستخدام) أو limit-bytes-total. الكروت بلا حدود لا تُمس أبداً. بلا أي كتابة على
+# الفلاش أثناء التشغيل. يعمل بعد النسخ الاحتياطي، فكل كرت محذوف موجود في نسخة اليوم.
 :if ([:len [find where name="eb-cleanup"]] = 0) do={ add name="eb-cleanup" }
-set [find where name="eb-cleanup"] policy=read,write,test source=":local now [:tonum [:timestamp]]\r\
+set [find where name="eb-cleanup"] policy=read,write,test source="# Gentle daily batch (no per-event flash writes): expiry comes from each voucher's\r\
+    \n# native limit-uptime (usage time from first login) and limit-bytes-total, which\r\
+    \n# RouterOS enforces itself. This only purges vouchers that already hit their limit.\r\
     \n:local n 0\r\
     \n:foreach id in=[/ip hotspot user find where name!=\"default-trial\"] do={\r\
     \n  :local dead false\r\
-    \n  :local c [/ip hotspot user get \$id comment]\r\
-    \n  :local p [:find \$c \"exp:\"]\r\
-    \n  :if ([:typeof \$p] = \"num\") do={\r\
-    \n    :if (\$now >= [:tonum [:pick \$c (\$p + 4) [:find \$c \";\" \$p]]]) do={ :set dead true }\r\
-    \n  }\r\
     \n  :local lu [/ip hotspot user get \$id limit-uptime]\r\
     \n  :if ([:typeof \$lu] = \"time\") do={\r\
     \n    :if (\$lu > 0s && [/ip hotspot user get \$id uptime] >= \$lu) do={ :set dead true }\r\
@@ -654,7 +677,7 @@ set [find where name="eb-cleanup"] policy=read,write,test source=":local now [:t
     \n    :set n (\$n + 1)\r\
     \n  }\r\
     \n}\r\
-    \n:log info (\"ElBasha: cleanup removed \" . \$n . \" expired vouchers\")"
+    \n:log info (\"ElBasha: cleanup removed \" . \$n . \" used-up vouchers\")"
 
 
 # ==============================================================================
@@ -666,9 +689,7 @@ remove [find where name~"^eb-"]
 add name=eb-backup start-time=$ebBackupTime interval=1d policy=read,write,test,sensitive \
     on-event="/system script run eb-backup" comment="ElBasha: daily voucher backup"
 add name=eb-cleanup start-time=$ebCleanupTime interval=1d policy=read,write,test \
-    on-event="/system script run eb-cleanup" comment="ElBasha: daily expired voucher cleanup"
-add name=eb-expire-check start-time=startup interval=5m policy=read,write,test \
-    on-event="/system script run eb-expire-check" comment="ElBasha: close expired sessions"
+    on-event="/system script run eb-cleanup" comment="ElBasha: daily used-up voucher cleanup"
 # إعادة تشغيل أسبوعية الساعة 4 فجراً. اليوم = يوم تشغيل هذا السكربت؛ لتغييره عدّل start-date
 add name=eb-weekly-reboot start-time=$ebRebootTime interval=1w policy=read,write,reboot \
     on-event="/system reboot" comment="ElBasha: weekly reboot"

@@ -98,7 +98,7 @@ summary{cursor:pointer;font-weight:700;font-size:.9rem}
     <table>
       <thead><tr>
         <th>الاسم المطبوع</th><th>السرعة</th><th>السعر</th><th>الصلاحية</th>
-        <th>بروفايل الراوتر</th><th class="qty">العدد</th><th class="sw">اللون</th><th class="del"></th>
+        <th>بروفايل الراوتر</th><th>مدة الاستخدام</th><th class="qty">العدد</th><th class="sw">اللون</th><th class="del"></th>
       </tr></thead>
       <tbody id="catRows"></tbody>
     </table>
@@ -142,15 +142,16 @@ summary{cursor:pointer;font-weight:700;font-size:.9rem}
 <script>
 (function(){
 var $=function(id){return document.getElementById(id)};
-var STORE='elbasha-vouchers-v2';
+var STORE='elbasha-vouchers-v3';
 var PER_SHEET=21, COLS=3;
 var CROWN='<svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#0b0a08"/><g fill="#d6ab4a"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#d6ab4a" stroke-width="7.5" stroke-linecap="round"/></g></svg>';
 
 // ===== الفئات الافتراضية: اسم، سرعة، سعر، صلاحية، بروفايل الراوتر، العدد، اللون =====
+// uptime = مدة الاستخدام (limit-uptime) تُطبع وتُفرض على الكرت: 1d أو 12h أو 1w.
 var DEFAULTS=[
-  {label:'باقة 1M',speed:'1 ميجا',price:'200 ريال',validity:'يوم واحد',profile:'eb-1M',qty:21,color:'#8a8f98'},
-  {label:'باقة 2M',speed:'2 ميجا',price:'500 ريال',validity:'3 أيام',profile:'eb-2M',qty:21,color:'#b8892c'},
-  {label:'باقة 4M',speed:'4 ميجا',price:'1500 ريال',validity:'أسبوع',profile:'eb-4M',qty:21,color:'#2f6f68'}
+  {label:'باقة 1M',speed:'1 ميجا',price:'200 ريال',validity:'يوم واحد',uptime:'1d',profile:'eb-1M',qty:21,color:'#8a8f98'},
+  {label:'باقة 2M',speed:'2 ميجا',price:'500 ريال',validity:'3 أيام',uptime:'3d',profile:'eb-2M',qty:21,color:'#b8892c'},
+  {label:'باقة 4M',speed:'4 ميجا',price:'1500 ريال',validity:'أسبوع',uptime:'1w',profile:'eb-4M',qty:21,color:'#2f6f68'}
 ];
 function clone(a){return JSON.parse(JSON.stringify(a))}
 var cats=clone(DEFAULTS);
@@ -172,14 +173,14 @@ function qrSvg(text){
 }
 
 // ===== بناء جدول تعديل الفئات =====
-var FIELDS=[['label','text'],['speed','text'],['price','text'],['validity','text'],['profile','text']];
+var FIELDS=[['label','text'],['speed','text'],['price','text'],['validity','text'],['profile','text'],['uptime','text']];
 function renderRows(){
   var tb=$('catRows');tb.innerHTML='';
   cats.forEach(function(c,i){
     var tr=document.createElement('tr');
     FIELDS.forEach(function(f){
       var td=document.createElement('td'),inp=document.createElement('input');
-      inp.value=c[f[0]];inp.dir=(f[0]==='profile')?'ltr':'auto';
+      inp.value=c[f[0]];inp.dir=(f[0]==='profile'||f[0]==='uptime')?'ltr':'auto';
       inp.addEventListener('input',function(){c[f[0]]=inp.value;save()});
       td.appendChild(inp);tr.appendChild(td);
     });
@@ -242,7 +243,9 @@ function generate(){
   var tag='eb-batch-'+new Date().toISOString().slice(0,10),rsc=[];
   var groups=cats.filter(function(c){return (+c.qty||0)>0}).map(function(c){
     var codes=genCodes(+c.qty,len,seen);
-    codes.forEach(function(code){rsc.push('/ip hotspot user add name="'+code+'" password="'+code+'" profile="'+c.profile+'" comment="'+tag+'"')});
+    var ut=(c.uptime||'').replace(/\s+/g,'');
+    var up=ut?' limit-uptime='+ut:'';
+    codes.forEach(function(code){rsc.push('/ip hotspot user add name="'+code+'" password="'+code+'" profile="'+c.profile+'"'+up+' comment="'+tag+'"')});
     return {cat:c,codes:codes};
   });
   $('rsc').value=rsc.join('\n');
@@ -266,7 +269,7 @@ function showPreview(){
 // --- wire up ---
 load();renderRows();
 ['host','genLen','showSpeed','mixSheet'].forEach(function(id){$(id).addEventListener('input',function(){save();updateCount()})});
-$('btnAddCat').addEventListener('click',function(){cats.push({label:'باقة جديدة',speed:'',price:'',validity:'',profile:'eb-new',qty:0,color:'#b8892c'});renderRows();save()});
+$('btnAddCat').addEventListener('click',function(){cats.push({label:'باقة جديدة',speed:'',price:'',validity:'',uptime:'1d',profile:'eb-new',qty:0,color:'#b8892c'});renderRows();save()});
 $('btnPreview').addEventListener('click',showPreview);
 $('btnGen').addEventListener('click',function(){generate()});
 $('btnGenPrint').addEventListener('click',function(){if(generate())window.print()});
