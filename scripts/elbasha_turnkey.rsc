@@ -320,17 +320,23 @@ set [find where name=$ebHsProfile] hotspot-address=$ebGw dns-name=$ebDnsName \
 
 # check-certificate=yes يحتاج شهادة جذر موثوقة في الراوتر:
 #   v7.19 فما فوق: /certificate settings set builtin-trust-anchors=trusted
+# ebUseMinified=true يجلب النسخة المصغّرة من dist/ (أصغر وأسرع). ولّدها أولاً بـ:
+#   npm install && npm run build   ثم ادفع مجلد dist/ إلى المستودع.
+:global ebUseMinified false
+:local srcBase ($ebRepo . "/" . $ebRef)
+:if ($ebUseMinified) do={ :set srcBase ($srcBase . "/dist") }
 :if ($ebDownloadTheme) do={
     :foreach f in={"login.html";"status.html";"alogin.html";"logout.html"} do={
         :do {
-            /tool fetch url=($ebRepo . "/" . $ebRef . "/themes/" . $ebTheme . "/" . $f) \
+            /tool fetch url=($srcBase . "/themes/" . $ebTheme . "/" . $f) \
                 dst-path=($ebHtmlDir . "/" . $f) check-certificate=yes
         } on-error={ :put ("ElBasha: could not download " . $f . " (check certificates / internet)") }
     }
-    # الخطوط العربية: يخدمها الراوتر نفسه، فتظهر قبل أن يملك المشترك إنترنت (نحو 170KB)
+    # الخطوط العربية المقتطعة: يخدمها الراوتر نفسه، فتظهر قبل أن يملك المشترك إنترنت
+    # (5 ملفات woff2، نحو 25-35KB لكل وزن، 168KB إجمالاً).
     :foreach f in={"eb-kufi-400.woff2";"eb-kufi-600.woff2";"eb-kufi-800.woff2";"eb-naskh-400.woff2";"eb-naskh-700.woff2"} do={
         :do {
-            /tool fetch url=($ebRepo . "/" . $ebRef . "/fonts/" . $f) \
+            /tool fetch url=($srcBase . "/fonts/" . $f) \
                 dst-path=($ebHtmlDir . "/fonts/" . $f) check-certificate=yes
         } on-error={ :put ("ElBasha: could not download font " . $f) }
     }

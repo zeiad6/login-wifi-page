@@ -1,0 +1,53 @@
+name: Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - "themes/**"
+      - "package.json"
+      - "eslint.config.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install --no-audit --no-fund
+
+      - name: Lint scripts
+        run: npm run lint
+
+      - name: Validate .rsc syntax
+        run: npm run check:rsc
+
+      - name: Build (minify pages)
+        run: npm run build
+
+      - name: Theme page JS must parse
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            let n = 0;
+            for (const base of ["themes", "dist/themes"]) {
+              for (const t of fs.readdirSync(base)) {
+                if (t === "fonts") continue;
+                for (const p of ["login", "status", "alogin", "logout"]) {
+                  const s = fs.readFileSync(`${base}/${t}/${p}.html`, "utf8");
+                  for (const m of s.matchAll(/<script>([\s\S]*?)<\/script>/g)) { new Function(m[1]); n++; }
+                }
+              }
+            }
+            console.log("parsed", n, "script blocks");
+          '

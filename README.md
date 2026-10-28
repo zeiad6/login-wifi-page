@@ -52,10 +52,26 @@
 
 ## 🛠️ تبديل القوالب (Switching Themes)
 
-ينسخ الأمر صفحات القالب الأربع إلى جذر المشروع:
+ينسخ الأمر صفحات القالب الأربع إلى جذر المشروع (سكربت Node عابر للمنصات، يعمل على Windows/Linux/macOS):
 ```bash
-./scripts/switch-theme.sh [oled-matrix | cyberpunk | swiss-minimal | aurora-glass | neo-brutalist | luxury-gold | spatial-glass | nordic-studio]
+node scripts/switch-theme.mjs [oled-matrix | cyberpunk | swiss-minimal | aurora-glass | neo-brutalist | luxury-gold | spatial-glass | nordic-studio]
+# أو: npm run switch -- luxury-gold
 ```
+
+---
+
+## ⚙️ البناء والفحص (Build & Checks)
+
+```bash
+npm install           # مرة واحدة
+npm run build         # يصغّر كل الصفحات إلى dist/ (CSS وJS مدمجان)، وينسخ الخطوط
+npm run check         # فحص ESLint لسكربتات Node + فحص بنيوي لملف .rsc (أقواس وتنصيص)
+npm run build:fonts   # اقتصاص الخطوط (يلزم python3 + fonttools) — نادراً ما يُحتاج
+```
+
+- **النشر المصغّر:** `dist/` مُستثنى من Git (مخرج بناء). للنشر المصغّر: `npm run build` ثم `git add -f dist && git commit && git push`، ثم اجعل `ebUseMinified true` في السكربت. الفائدة نحو 5-6% (الصفحات مضغوطة يدوياً أصلاً؛ ثقل التحميل الحقيقي هو الخطوط وهي مقتطعة).
+- **فحص `.rsc`:** `node scripts/check-rsc.mjs <file>` يتأكد من إغلاق `{}` `[]` `()` وعلامات التنصيص قبل `/import`، فلا يفشل الاستيراد بخطأ مطبعي.
+- **الخطوط:** مقتطعة أصلاً بـ [`scripts/build-fonts.py`](scripts/build-fonts.py) (fonttools): كل وزن 25-35KB بعد الاقتصاص على العربية والأرقام وعلامات الترقيم المستخدمة فقط. لا يمكن إنزالها أكثر دون كسر اتصال الحروف.
 
 ---
 
@@ -106,7 +122,8 @@
 **El Basha Net (الباشا نت)** is a set of 8 MikroTik hotspot themes. Each `themes/<id>/` folder holds `login.html`, `status.html`, `alogin.html`, `logout.html` and `assets/logo.svg`. Pages are self-contained (inline CSS/JS, no external fonts or CDNs), so they load before the client has internet access.
 
 - **Login:** HTTP-CHAP (MD5) with the router's `chap-id`/`chap-challenge`; MikroTik error messages are translated to Arabic.
-- **Switch theme:** `./scripts/switch-theme.sh <id>` copies the four pages to the repository root.
+- **Switch theme:** `node scripts/switch-theme.mjs <id>` copies the four pages to the repository root (cross-platform).
+- **Build:** `npm install && npm run build` minifies all pages into `dist/`; `npm run check` lints scripts and validates the `.rsc` syntax.
 - **Router setup:** edit "Block 0" variables in `scripts/elbasha_turnkey.rsc`, upload it, then run `/import file-name=elbasha_turnkey.rsc`. Non-destructive: existing hotspot users and profiles are kept.
 - **Vouchers:** `vouchers/vouchers.html` prints 21 QR vouchers per A4 page; the QR opens `/login?v=CODE`, which signs in via CHAP.
 - **Preview:** open `gallery.html` from a local web server to see every theme live.
