@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>طباعة كروت الباشا نت</title>
+<title>استوديو كروت الباشا نت</title>
 <!-- مكتبة QR محلية (بلا إنترنت). يجب أن يبقى الملف qrcode.min.js بجوار هذه الصفحة -->
 <script src="qrcode.min.js"></script>
 <style>
@@ -21,41 +21,67 @@
 body{font-family:"EB Kufi","Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;background:#efece4;color:var(--ink)}
 
 /* ===== لوحة التحكم (لا تُطبع) ===== */
-.ctrl{max-width:1100px;margin:16px auto;padding:16px;background:#fff;border:1px solid #ddd;border-radius:12px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.ctrl h1{grid-column:1/-1;font-size:1.2rem}
-.ctrl label{display:grid;gap:4px;font-size:.85rem;font-weight:600}
-.ctrl input,.ctrl select,.ctrl textarea{font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;width:100%}
-.ctrl textarea{min-height:120px;direction:ltr;font-family:ui-monospace,Menlo,Consolas,monospace}
-.ctrl .wide{grid-column:1/-1}
-.ctrl .row{display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1}
-.ctrl button{font:inherit;font-weight:700;padding:10px 16px;border:0;border-radius:8px;background:var(--ink);color:var(--gold-soft);cursor:pointer}
-.ctrl button.alt{background:#ddd;color:var(--ink)}
-.ctrl .note{grid-column:1/-1;font-size:.8rem;color:#555}
+.ctrl{max-width:1180px;margin:16px auto;padding:18px;background:#fff;border:1px solid #ddd;border-radius:14px}
+.ctrl h1{font-size:1.25rem;display:flex;align-items:center;gap:10px}
+.ctrl h1 svg{width:30px;height:30px}
+.ctrl h2{font-size:1rem;margin:18px 0 8px;padding-top:14px;border-top:1px solid #eee}
+.hint{font-size:.82rem;color:#555;margin:4px 0 2px;line-height:1.6}
+.settings{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:10px}
+label{display:grid;gap:4px;font-size:.84rem;font-weight:600}
+input,select,textarea{font:inherit;padding:8px;border:1px solid #bbb;border-radius:8px;width:100%;background:#fff}
+input[type=color]{padding:3px;height:38px;cursor:pointer}
+input[type=checkbox]{width:auto}
+.chk{flex-direction:row;align-items:center;gap:8px;font-weight:600}
+textarea{min-height:110px;direction:ltr;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem}
+
+/* ===== جدول الفئات ===== */
+.cats{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:820px;font-size:.84rem}
+th,td{padding:6px;border-bottom:1px solid #eee;text-align:start;vertical-align:middle}
+th{font-size:.76rem;color:#555;font-weight:700}
+td input{padding:6px}
+td.sw{width:46px}td.qty{width:92px}td.del{width:40px}
+.catdot{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.2)}
+.icon-btn{border:0;background:none;cursor:pointer;font-size:1.1rem;line-height:1;padding:4px;border-radius:6px}
+.icon-btn:hover{background:#f0ede6}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+button.act{font:inherit;font-weight:700;padding:10px 18px;border:0;border-radius:9px;background:var(--ink);color:var(--gold-soft);cursor:pointer}
+button.alt{background:#e7e3d8;color:var(--ink)}
+button.ghost{background:none;border:1px solid #bbb;color:var(--ink)}
+.count{font-size:.85rem;color:#444;margin-inline-start:auto}
+details{margin-top:14px}
+summary{cursor:pointer;font-weight:700;font-size:.9rem}
 
 /* ===== صفحة A4: 3 أعمدة × 7 صفوف = 21 كرتاً ===== */
 @page{size:A4;margin:8mm}
-.sheet{width:194mm;margin:0 auto 16px;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:38mm;background:var(--paper);break-after:page}
+.sheet{width:194mm;margin:0 auto 16px;display:grid;grid-template-columns:repeat(var(--cols,3),1fr);grid-auto-rows:var(--cardh,38mm);background:var(--paper);break-after:page;box-shadow:0 1px 8px rgba(0,0,0,.12)}
 .sheet:last-child{break-after:auto}
+.sheet.preview{box-shadow:none;background:none;width:auto;margin:0;gap:4mm;grid-template-columns:repeat(auto-fill,minmax(70mm,1fr))}
 
-/* ===== الكرت ===== */
-.card{position:relative;outline:.25mm dashed var(--cut);padding:2.6mm 3mm;display:grid;grid-template-columns:1fr 23mm;grid-template-rows:auto 1fr auto;column-gap:2.5mm;overflow:hidden;break-inside:avoid}
-.card::before{content:"";position:absolute;inset-inline:0;top:0;height:1.2mm;background:linear-gradient(90deg,var(--gold),var(--gold-soft),var(--gold))}
+/* ===== الكرت: لونه من متغير الفئة --a ===== */
+.card{--a:var(--gold);position:relative;outline:.25mm dashed var(--cut);padding:2.6mm 3mm;display:grid;grid-template-columns:1fr 23mm;grid-template-rows:auto auto 1fr auto;column-gap:2.5mm;overflow:hidden;break-inside:avoid;background:var(--paper)}
+.card.preview-card{outline:1px dashed var(--cut);box-shadow:0 1px 6px rgba(0,0,0,.14)}
+.card::before{content:"";position:absolute;inset-inline:0;top:0;height:1.4mm;background:linear-gradient(90deg,var(--a),color-mix(in srgb,var(--a) 35%,#fff),var(--a))}
 .head{display:flex;align-items:center;gap:1.6mm;font-weight:800;font-size:9.5pt}
 .head svg{width:6mm;height:6mm;flex:none}
-.pkg{margin-inline-start:auto;font-size:7pt;font-weight:700;padding:.4mm 1.6mm;border:.25mm solid var(--gold);border-radius:1mm;color:var(--gold);white-space:nowrap}
+.pkg{margin-inline-start:auto;font-size:7pt;font-weight:700;padding:.4mm 1.8mm;border:.25mm solid var(--a);border-radius:1mm;color:var(--a);white-space:nowrap}
+.speed{grid-column:1;font-size:7pt;font-weight:700;color:var(--a);margin-top:.3mm}
 .code-box{align-self:center;text-align:center}
 .code-box small{display:block;font-size:6.2pt;color:#666}
 .code{direction:ltr;font-family:ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;font-size:13pt;font-weight:800;letter-spacing:.06em;border:.3mm solid var(--ink);border-radius:1.2mm;padding:.8mm 1mm;background:#faf7ee}
 .meta{display:flex;justify-content:space-between;font-size:7pt;font-weight:600}
-.meta b{color:var(--gold)}
-.qr{grid-column:2;grid-row:1/4;display:grid;place-items:center;align-content:center;gap:.6mm;text-align:center;font-size:5.6pt;color:#444}
+.meta b{color:var(--a)}
+.qr{grid-column:2;grid-row:1/5;display:grid;place-items:center;align-content:center;gap:.6mm;text-align:center;font-size:5.6pt;color:#444}
 .qr svg{width:22mm;height:22mm;display:block}
 .qr .na{width:22mm;height:22mm;display:grid;place-items:center;border:.25mm dashed #999}
+.previews-wrap{max-width:1180px;margin:0 auto 18px;padding:0 16px}
+.previews-wrap h2{font-size:1rem;margin:10px 0}
 
 @media print{
   body{background:none}
-  .ctrl{display:none}
-  .sheet{margin:0}
+  .ctrl,.previews-wrap,.noprint{display:none!important}
+  .sheet{margin:0;box-shadow:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
@@ -63,57 +89,81 @@ body{font-family:"EB Kufi","Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;backg
 <body>
 
 <form class="ctrl" id="ctrl" onsubmit="return false">
-  <h1>طباعة كروت الباشا نت</h1>
+  <h1><svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#0b0a08"/><g fill="#d6ab4a"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#d6ab4a" stroke-width="7.5" stroke-linecap="round"/></g></svg> استوديو كروت الباشا نت</h1>
+  <p class="hint">برنامج الطباعة المجاني هو متصفحك نفسه: صمّم الفئات هنا، ثم زر <b>طباعة</b> يفتح نافذة الطباعة — اطبع على ورق أو احفظ PDF، بلا تثبيت أي برنامج وبلا إنترنت.</p>
 
-  <!-- الباقات: طابقها مع ebPackages في scripts/elbasha_turnkey.rsc -->
-  <label>الباقة
-    <select id="pkg"></select>
-  </label>
-  <label>السعر المطبوع<input id="price"></label>
-  <label>مدة الصلاحية المطبوعة<input id="validity"></label>
-  <label>عنوان الهوتسبوت (dns-name)<input id="host" value="elbasha.net" dir="ltr"></label>
-
-  <label class="wide">أرقام الكروت (رقم في كل سطر)
-    <textarea id="codes" placeholder="4821930571&#10;7710458392"></textarea>
-  </label>
-
-  <label>عدد الكروت المولّدة<input id="genCount" type="number" min="1" max="2100" value="21"></label>
-  <label>طول الرقم (10 أو أكثر)<input id="genLen" type="number" min="8" max="16" value="10"></label>
-  <div class="row">
-    <button type="button" id="btnGen" class="alt">توليد أرقام عشوائية</button>
-    <button type="button" id="btnRender">تجهيز الكروت</button>
-    <button type="button" id="btnPrint">طباعة</button>
+  <h2>الفئات (الباقات)</h2>
+  <p class="hint">كل سطر فئة بتصميمها ولونها. طابِق <b>بروفايل الراوتر</b> مع <code>ebPackages</code> في <code>scripts/elbasha_turnkey.rsc</code>. عدّل أي خانة ويتحدث التصميم فوراً.</p>
+  <div class="cats">
+    <table>
+      <thead><tr>
+        <th>الاسم المطبوع</th><th>السرعة</th><th>السعر</th><th>الصلاحية</th>
+        <th>بروفايل الراوتر</th><th class="qty">العدد</th><th class="sw">اللون</th><th class="del"></th>
+      </tr></thead>
+      <tbody id="catRows"></tbody>
+    </table>
+  </div>
+  <div class="row noprint">
+    <button type="button" class="ghost" id="btnAddCat">+ إضافة فئة</button>
+    <button type="button" class="alt" id="btnPreview">معاينة التصميم</button>
   </div>
 
-  <label class="wide">أوامر إضافة الكروت المولّدة إلى الراوتر (انسخها والصقها في Terminal)
+  <h2>الإعدادات</h2>
+  <div class="settings">
+    <label>عنوان الهوتسبوت (dns-name)<input id="host" value="elbasha.net" dir="ltr"></label>
+    <label>طول رقم الكرت (10 أو أكثر)<input id="genLen" type="number" min="8" max="16" value="10"></label>
+    <label class="chk"><input type="checkbox" id="showSpeed" checked> إظهار سطر السرعة على الكرت</label>
+    <label class="chk"><input type="checkbox" id="mixSheet"> خلط الفئات في صفحة واحدة</label>
+  </div>
+
+  <div class="row">
+    <button type="button" class="act" id="btnGenPrint">توليد وطباعة</button>
+    <button type="button" class="alt" id="btnGen">توليد فقط (بلا طباعة)</button>
+    <button type="button" class="ghost" id="btnPrint">طباعة الحالي</button>
+    <button type="button" class="ghost" id="btnReset">استعادة الافتراضي</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <details>
+    <summary>أوامر إضافة الكروت المولّدة إلى الراوتر</summary>
+    <p class="hint">انسخها والصقها في Terminal الراوتر بعد التوليد. كل كرت يُضاف ببروفايل فئته.</p>
     <textarea id="rsc" readonly></textarea>
-  </label>
-  <p class="note">الرمز QR يفتح صفحة الدخول ويُدخل الرقم تلقائياً بتشفير CHAP، فلا يكتب العميل شيئاً. اطبع بمقياس 100% (بلا "ملاءمة للصفحة") لتبقى مقاسات القص صحيحة.</p>
+  </details>
+  <p class="hint">الرمز QR يفتح صفحة الدخول ويُدخل الرقم تلقائياً بتشفير CHAP، فلا يكتب العميل شيئاً. عند الطباعة اختر المقياس 100% (بلا "ملاءمة للصفحة") لتبقى مقاسات القص صحيحة، وفعّل "رسوم الخلفية / Background graphics".</p>
 </form>
+
+<div class="previews-wrap noprint" id="previewWrap" hidden>
+  <h2>معاينة فئة من كل باقة</h2>
+  <div class="sheet preview" id="preview"></div>
+</div>
 
 <div id="out"></div>
 
 <script>
 (function(){
-// ===== الباقات: الاسم المعروض، بروفايل الراوتر، السعر، الصلاحية =====
-var PACKAGES=[
-  {label:'باقة 1M',profile:'eb-1M',price:'200 ريال',validity:'يوم واحد'},
-  {label:'باقة 2M',profile:'eb-2M',price:'500 ريال',validity:'3 أيام'},
-  {label:'باقة 4M',profile:'eb-4M',price:'1500 ريال',validity:'أسبوع'}
-];
-var PER_SHEET=21;
+var $=function(id){return document.getElementById(id)};
+var STORE='elbasha-vouchers-v2';
+var PER_SHEET=21, COLS=3;
 var CROWN='<svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#0b0a08"/><g fill="#d6ab4a"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#d6ab4a" stroke-width="7.5" stroke-linecap="round"/></g></svg>';
 
-var $=function(id){return document.getElementById(id)};
-var pkg=$('pkg');
-PACKAGES.forEach(function(p,i){var o=document.createElement('option');o.value=i;o.textContent=p.label;pkg.appendChild(o)});
-function applyPkg(){var p=PACKAGES[pkg.value];$('price').value=p.price;$('validity').value=p.validity}
-pkg.addEventListener('change',applyPkg);applyPkg();
+// ===== الفئات الافتراضية: اسم، سرعة، سعر، صلاحية، بروفايل الراوتر، العدد، اللون =====
+var DEFAULTS=[
+  {label:'باقة 1M',speed:'1 ميجا',price:'200 ريال',validity:'يوم واحد',profile:'eb-1M',qty:21,color:'#8a8f98'},
+  {label:'باقة 2M',speed:'2 ميجا',price:'500 ريال',validity:'3 أيام',profile:'eb-2M',qty:21,color:'#b8892c'},
+  {label:'باقة 4M',speed:'4 ميجا',price:'1500 ريال',validity:'أسبوع',profile:'eb-4M',qty:21,color:'#2f6f68'}
+];
+function clone(a){return JSON.parse(JSON.stringify(a))}
+var cats=clone(DEFAULTS);
+
+function load(){try{var s=localStorage.getItem(STORE);if(s){var d=JSON.parse(s);if(d&&d.cats&&d.cats.length)cats=d.cats;
+  if(d.host)$('host').value=d.host;if(d.len)$('genLen').value=d.len;
+  if('showSpeed' in d)$('showSpeed').checked=d.showSpeed;if('mix' in d)$('mixSheet').checked=d.mix;}}catch(e){}}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({cats:cats,host:$('host').value,len:$('genLen').value,showSpeed:$('showSpeed').checked,mix:$('mixSheet').checked}))}catch(e){}}
 
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 // Same 4-digit grouping as the login field, so the printed code matches what the customer types.
 function group(v){return v.replace(/(.{4})(?=.)/g,'$1 ')}
-function codes(){return $('codes').value.split(/\r?\n/).map(function(s){return s.replace(/\s+/g,'')}).filter(Boolean)}
+function host(){return $('host').value.replace(/^\s+|\s+$/g,'')}
 
 function qrSvg(text){
   if(typeof qrcode!=='function')return '<div class="na">QR</div>';
@@ -121,42 +171,107 @@ function qrSvg(text){
   return q.createSvgTag({cellSize:2,margin:0,scalable:true});
 }
 
-function render(){
-  var list=codes(),p=PACKAGES[pkg.value],host=$('host').value.replace(/^\s+|\s+$/g,''),out=$('out');
-  var price=esc($('price').value),validity=esc($('validity').value),html='';
-  for(var i=0;i<list.length;i+=PER_SHEET){
-    html+='<section class="sheet">';
-    list.slice(i,i+PER_SHEET).forEach(function(c){
-      var url='http://'+host+'/login?v='+encodeURIComponent(c);
-      html+='<article class="card">'+
-        '<div class="head">'+CROWN+'<span>الباشا نت</span><span class="pkg">'+esc(p.label)+'</span></div>'+
-        '<div class="code-box"><small>رقم الكرت</small><div class="code">'+esc(group(c))+'</div></div>'+
-        '<div class="meta"><span>السعر: <b>'+price+'</b></span><span>الصلاحية: <b>'+validity+'</b></span></div>'+
-        '<div class="qr">'+qrSvg(url)+'<span>امسح للدخول</span></div>'+
-      '</article>';
+// ===== بناء جدول تعديل الفئات =====
+var FIELDS=[['label','text'],['speed','text'],['price','text'],['validity','text'],['profile','text']];
+function renderRows(){
+  var tb=$('catRows');tb.innerHTML='';
+  cats.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    FIELDS.forEach(function(f){
+      var td=document.createElement('td'),inp=document.createElement('input');
+      inp.value=c[f[0]];inp.dir=(f[0]==='profile')?'ltr':'auto';
+      inp.addEventListener('input',function(){c[f[0]]=inp.value;save()});
+      td.appendChild(inp);tr.appendChild(td);
     });
-    html+='</section>';
-  }
-  out.innerHTML=html;
+    var tq=document.createElement('td');tq.className='qty';var q=document.createElement('input');
+    q.type='number';q.min=0;q.max=2100;q.value=c.qty;
+    q.addEventListener('input',function(){c.qty=Math.min(2100,Math.max(0,+q.value||0));save();updateCount()});
+    tq.appendChild(q);tr.appendChild(tq);
+    var tc=document.createElement('td');tc.className='sw';var col=document.createElement('input');
+    col.type='color';col.value=c.color;col.className='catdot';
+    col.addEventListener('input',function(){c.color=col.value;save()});
+    tc.appendChild(col);tr.appendChild(tc);
+    var tdd=document.createElement('td');tdd.className='del';
+    if(cats.length>1){var b=document.createElement('button');b.type='button';b.className='icon-btn';b.textContent='🗑';b.title='حذف الفئة';
+      b.addEventListener('click',function(){cats.splice(i,1);renderRows();save();updateCount()});tdd.appendChild(b)}
+    tr.appendChild(tdd);tb.appendChild(tr);
+  });
+  updateCount();
+}
+
+function cardHtml(cat,code,preview){
+  var url='http://'+host()+'/login?v='+encodeURIComponent(code);
+  var speed=$('showSpeed').checked&&cat.speed?'<div class="speed">السرعة: '+esc(cat.speed)+'</div>':'';
+  return '<article class="card'+(preview?' preview-card':'')+'" style="--a:'+esc(cat.color)+'">'+
+    '<div class="head">'+CROWN+'<span>الباشا نت</span><span class="pkg">'+esc(cat.label)+'</span></div>'+
+    speed+
+    '<div class="code-box"><small>رقم الكرت</small><div class="code">'+esc(group(code))+'</div></div>'+
+    '<div class="meta"><span>السعر: <b>'+esc(cat.price)+'</b></span><span>الصلاحية: <b>'+esc(cat.validity)+'</b></span></div>'+
+    '<div class="qr">'+qrSvg(url)+'<span>امسح للدخول</span></div>'+
+  '</article>';
 }
 
 // Uniform random digits: bytes >= 250 are discarded so every digit 0-9 is equally likely.
-function randomCode(len){
-  var s='',b=new Uint8Array(1);
-  while(s.length<len){crypto.getRandomValues(b);if(b[0]<250)s+=b[0]%10}
-  return s;
+function randomCode(len){var s='',b=new Uint8Array(1);while(s.length<len){crypto.getRandomValues(b);if(b[0]<250)s+=b[0]%10}return s}
+function genCodes(total,len,seen){var list=[];while(list.length<total){var c=randomCode(len);if(!seen[c]){seen[c]=1;list.push(c)}}return list}
+
+// flat: [{cat,code},...] -> chunked into A4 sheets
+function sheetsHtml(flat){
+  var html='';
+  for(var i=0;i<flat.length;i+=PER_SHEET){
+    html+='<section class="sheet" style="--cols:'+COLS+'">';
+    flat.slice(i,i+PER_SHEET).forEach(function(it){html+=cardHtml(it.cat,it.code)});
+    html+='</section>';
+  }
+  return html;
 }
-$('btnGen').addEventListener('click',function(){
-  var n=Math.min(2100,Math.max(1,+$('genCount').value||0)),len=Math.min(16,Math.max(8,+$('genLen').value||10));
-  var seen={},list=[];
-  while(list.length<n){var c=randomCode(len);if(!seen[c]){seen[c]=1;list.push(c)}}
-  $('codes').value=list.join('\n');
-  var p=PACKAGES[pkg.value],tag='eb-batch-'+new Date().toISOString().slice(0,10);
-  $('rsc').value=list.map(function(c){return '/ip hotspot user add name="'+c+'" password="'+c+'" profile="'+p.profile+'" comment="'+tag+'"'}).join('\n');
-  render();
-});
-$('btnRender').addEventListener('click',render);
-$('btnPrint').addEventListener('click',function(){render();window.print()});
+// Round-robin one code per category so each sheet mixes all tiers.
+function interleave(groups){
+  var copies=groups.map(function(g){return g.codes.slice()}),merged=[],left=true;
+  while(left){left=false;groups.forEach(function(g,i){if(copies[i].length){merged.push({cat:g.cat,code:copies[i].shift()});left=true}})}
+  return merged;
+}
+
+function updateCount(){
+  var t=cats.reduce(function(s,c){return s+(+c.qty||0)},0);
+  $('count').textContent=t?('الإجمالي: '+t+' كرت · '+Math.ceil(t/PER_SHEET)+' صفحة A4'):'لا كروت';
+}
+
+function generate(){
+  var len=Math.min(16,Math.max(8,+$('genLen').value||10)),seen={},mix=$('mixSheet').checked;
+  var tag='eb-batch-'+new Date().toISOString().slice(0,10),rsc=[];
+  var groups=cats.filter(function(c){return (+c.qty||0)>0}).map(function(c){
+    var codes=genCodes(+c.qty,len,seen);
+    codes.forEach(function(code){rsc.push('/ip hotspot user add name="'+code+'" password="'+code+'" profile="'+c.profile+'" comment="'+tag+'"')});
+    return {cat:c,codes:codes};
+  });
+  $('rsc').value=rsc.join('\n');
+  if(mix){
+    $('out').innerHTML=sheetsHtml(interleave(groups));
+  } else {
+    // one category per sheet-run: never mix tiers on a page
+    $('out').innerHTML=groups.map(function(g){
+      return sheetsHtml(g.codes.map(function(code){return {cat:g.cat,code:code}}));
+    }).join('');
+  }
+  save();
+  return groups.length;
+}
+
+function showPreview(){
+  var p=$('preview');p.innerHTML=cats.map(function(c){return cardHtml(c,randomCode(+$('genLen').value||10),true)}).join('');
+  $('previewWrap').hidden=false;
+}
+
+// --- wire up ---
+load();renderRows();
+['host','genLen','showSpeed','mixSheet'].forEach(function(id){$(id).addEventListener('input',function(){save();updateCount()})});
+$('btnAddCat').addEventListener('click',function(){cats.push({label:'باقة جديدة',speed:'',price:'',validity:'',profile:'eb-new',qty:0,color:'#b8892c'});renderRows();save()});
+$('btnPreview').addEventListener('click',showPreview);
+$('btnGen').addEventListener('click',function(){generate()});
+$('btnGenPrint').addEventListener('click',function(){if(generate())window.print()});
+$('btnPrint').addEventListener('click',function(){window.print()});
+$('btnReset').addEventListener('click',function(){cats=clone(DEFAULTS);renderRows();$('out').innerHTML='';$('rsc').value='';save()});
 })();
 </script>
 </body>
