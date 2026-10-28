@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'">
 <meta name="theme-color" content="#06070d">
 <meta name="color-scheme" content="dark">
 <title>تسجيل الدخول | شبكة الباشا نت</title>
@@ -225,7 +227,7 @@ h1{text-shadow:-2px 0 rgba(255,43,214,.6),2px 0 rgba(0,240,255,.6)}
   </aside>
 </div>
 <footer class="foot rise" style="--i:4"><span>الباشا نت · إنترنت لاسلكي بالكروت</span><span>الدعم: <a href="tel:777000000" dir="ltr">777 000 000</a></span></footer>
-<div class="dev-credit rise" style="--i:5"><a href="https://zeidexlink.zeidexsoft.com/zeidex" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg><span>تم التطوير بواسطة</span><b dir="ltr">zeidexsoft</b></a></div>
+<div class="dev-credit rise" style="--i:5"><a href="https://zeidexlink.zeidexsoft.com/zeidex" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg><span>تم التطوير بواسطة</span><b dir="ltr">zeidexsoft</b></a></div>
 
 </div>
 
@@ -379,6 +381,7 @@ if(raw&&raw.indexOf('$(')<0){
 }
 // The QR on a printed voucher opens /login?v=CODE: fill it in and sign in through the CHAP form, so the code never travels as plain text.
 var qv=/[?&]v=([^&#]+)/.exec(location.search);
+if(qv){try{history.replaceState(null,'',location.pathname)}catch(e){}}
 if(qv&&$('serverErrorBanner').hidden){try{input.value=group(decodeURIComponent(qv[1]));updateCount();btn.click()}catch(e){}}
 var pb=$('btnPaste');
 if(pb&&navigator.clipboard&&navigator.clipboard.readText&&window.isSecureContext){
