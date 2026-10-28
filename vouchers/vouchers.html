@@ -78,6 +78,31 @@ summary{cursor:pointer;font-weight:700;font-size:.9rem}
 .previews-wrap{max-width:1180px;margin:0 auto 18px;padding:0 16px}
 .previews-wrap h2{font-size:1rem;margin:10px 0}
 
+/* ===== تصاميم الكروت (data-design): classic | ticket | minimal | premium ===== */
+/* classic = الافتراضي أعلاه. البقية تعدّل نفس البنية فقط. */
+
+/* ticket: حافة تذكرة بشريط جانبي وخط تخريم */
+.card[data-design=ticket]{border:.3mm solid color-mix(in srgb,var(--a) 55%,#d8cdb4);padding-inline-start:5mm}
+.card[data-design=ticket]::before{inset:0 auto 0 0;height:auto;width:2mm;background:var(--a)}
+.card[data-design=ticket]::after{content:"";position:absolute;inset-block:0;inset-inline-start:3mm;width:0;border-inline-start:.3mm dashed color-mix(in srgb,var(--a) 50%,#bbb)}
+.card[data-design=ticket] .code{background:#fff}
+
+/* minimal: بلا شريط، خطوط رفيعة ومساحة واسعة */
+.card[data-design=minimal]{outline-color:#d7d2c6}
+.card[data-design=minimal]::before{display:none}
+.card[data-design=minimal] .head{border-bottom:.2mm solid #e7e2d6;padding-bottom:1mm}
+.card[data-design=minimal] .code{border:0;border-bottom:.4mm solid var(--a);border-radius:0;background:none;padding-bottom:.4mm}
+.card[data-design=minimal] .pkg{border:0;padding:0}
+
+/* premium: كرت داكن فاخر بذهبي */
+.card[data-design=premium]{background:var(--ink);color:#f1e9d6}
+.card[data-design=premium]::before{height:1.4mm;background:linear-gradient(90deg,var(--a),#f6e3a1,var(--a))}
+.card[data-design=premium] .head{color:#f6e3a1}
+.card[data-design=premium] .code-box small,.card[data-design=premium] .qr{color:#b9ad92}
+.card[data-design=premium] .code{background:#15120d;color:#f6e3a1;border-color:var(--a)}
+/* الكود QR أسود على شفاف؛ خلفية بيضاء خلفه تبقيه قابلاً للمسح على الكرت الداكن */
+.card[data-design=premium] .qr svg{background:#fff;padding:1mm;border-radius:1mm;box-sizing:content-box}
+
 @media print{
   body{background:none}
   .ctrl,.previews-wrap,.noprint{display:none!important}
@@ -110,6 +135,14 @@ summary{cursor:pointer;font-weight:700;font-size:.9rem}
 
   <h2>الإعدادات</h2>
   <div class="settings">
+    <label>تصميم الكرت
+      <select id="design">
+        <option value="classic">كلاسيكي (شريط ذهبي)</option>
+        <option value="ticket">تذكرة (حافة جانبية)</option>
+        <option value="minimal">بسيط (خطوط رفيعة)</option>
+        <option value="premium">فاخر (كرت داكن ذهبي)</option>
+      </select>
+    </label>
     <label>عنوان الهوتسبوت (dns-name)<input id="host" value="elbasha.net" dir="ltr"></label>
     <label>طول رقم الكرت (10 أو أكثر)<input id="genLen" type="number" min="8" max="16" value="10"></label>
     <label class="chk"><input type="checkbox" id="showSpeed" checked> إظهار سطر السرعة على الكرت</label>
@@ -142,7 +175,7 @@ summary{cursor:pointer;font-weight:700;font-size:.9rem}
 <script>
 (function(){
 var $=function(id){return document.getElementById(id)};
-var STORE='elbasha-vouchers-v3';
+var STORE='elbasha-vouchers-v4';
 var PER_SHEET=21, COLS=3;
 var CROWN='<svg viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="30" fill="#0b0a08"/><g fill="#d6ab4a"><path d="M31 62L26 31 46 46 64 20 82 46 102 31 97 62Z"/><path d="M31 67H97V74H31Z"/><circle cx="26" cy="27" r="5"/><circle cx="64" cy="15" r="5.5"/><circle cx="102" cy="27" r="5"/><circle cx="64" cy="106" r="5.5"/><path d="M45.6 90.6A24 24 0 0 1 82.4 90.6M54.8 98.3A12 12 0 0 1 73.2 98.3" fill="none" stroke="#d6ab4a" stroke-width="7.5" stroke-linecap="round"/></g></svg>';
 
@@ -158,8 +191,9 @@ var cats=clone(DEFAULTS);
 
 function load(){try{var s=localStorage.getItem(STORE);if(s){var d=JSON.parse(s);if(d&&d.cats&&d.cats.length)cats=d.cats;
   if(d.host)$('host').value=d.host;if(d.len)$('genLen').value=d.len;
-  if('showSpeed' in d)$('showSpeed').checked=d.showSpeed;if('mix' in d)$('mixSheet').checked=d.mix;}}catch(e){}}
-function save(){try{localStorage.setItem(STORE,JSON.stringify({cats:cats,host:$('host').value,len:$('genLen').value,showSpeed:$('showSpeed').checked,mix:$('mixSheet').checked}))}catch(e){}}
+  if('showSpeed' in d)$('showSpeed').checked=d.showSpeed;if('mix' in d)$('mixSheet').checked=d.mix;
+  if(d.design)$('design').value=d.design;}}catch(e){}}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({cats:cats,host:$('host').value,len:$('genLen').value,showSpeed:$('showSpeed').checked,mix:$('mixSheet').checked,design:$('design').value}))}catch(e){}}
 
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 // Same 4-digit grouping as the login field, so the printed code matches what the customer types.
@@ -203,7 +237,7 @@ function renderRows(){
 function cardHtml(cat,code,preview){
   var url='http://'+host()+'/login?v='+encodeURIComponent(code);
   var speed=$('showSpeed').checked&&cat.speed?'<div class="speed">السرعة: '+esc(cat.speed)+'</div>':'';
-  return '<article class="card'+(preview?' preview-card':'')+'" style="--a:'+esc(cat.color)+'">'+
+  return '<article class="card'+(preview?' preview-card':'')+'" data-design="'+esc($('design').value)+'" style="--a:'+esc(cat.color)+'">'+
     '<div class="head">'+CROWN+'<span>الباشا نت</span><span class="pkg">'+esc(cat.label)+'</span></div>'+
     speed+
     '<div class="code-box"><small>رقم الكرت</small><div class="code">'+esc(group(code))+'</div></div>'+
@@ -268,7 +302,8 @@ function showPreview(){
 
 // --- wire up ---
 load();renderRows();
-['host','genLen','showSpeed','mixSheet'].forEach(function(id){$(id).addEventListener('input',function(){save();updateCount()})});
+['host','genLen','showSpeed','mixSheet','design'].forEach(function(id){$(id).addEventListener('input',function(){save();updateCount()})});
+$('design').addEventListener('change',function(){if(!$('previewWrap').hidden)showPreview()});
 $('btnAddCat').addEventListener('click',function(){cats.push({label:'باقة جديدة',speed:'',price:'',validity:'',uptime:'1d',profile:'eb-new',qty:0,color:'#b8892c'});renderRows();save()});
 $('btnPreview').addEventListener('click',showPreview);
 $('btnGen').addEventListener('click',function(){generate()});

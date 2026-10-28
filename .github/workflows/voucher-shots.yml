@@ -1,0 +1,55 @@
+name: Voucher shots
+
+# Renders docs/img/cards-<design>.png and docs/img/voucher-studio.gif and commits
+# them. Runs when the voucher studio or its shot script changes.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "vouchers/**"
+      - "fonts/**"
+      - "scripts/make-voucher-shots.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: voucher-shots
+  cancel-in-progress: true
+
+jobs:
+  shots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Playwright Chromium and ffmpeg
+        run: |
+          npm i --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Render voucher shots
+        run: node scripts/make-voucher-shots.mjs
+
+      - name: Commit shots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/img
+          if git diff --cached --quiet; then
+            echo "Shots unchanged"
+            exit 0
+          fi
+          git commit -m "Regenerate voucher shots"
+          for i in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            git pull --rebase --autostash origin main
+          done
+          echo "::error::push failed after retries"
+          exit 1
